@@ -1,0 +1,105 @@
+.header {
+  padding: 20px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.logoIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  height: 32px;
+  width: auto;
+}
+
+.logoText {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.5px;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex: 1;
+  text-align: right;
+}
+
+.tagline {
+  margin: 0;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.languageSelector {
+  display: flex;
+  gap: 4px;
+}
+
+.langButton {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.langButton:hover {
+  border-color: var(--theme-color, #3A7CFD);
+  color: var(--theme-color, #3A7CFD);
+  background: #f0f6ff;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .header {
+    padding: 16px;
+  }
+  
+  .container {
+    gap: 12px;
+  }
+  
+  .logoText {
+    font-size: 16px;
+  }
+  
+  .tagline {
+    font-size: 11px;
+    max-width: 180px;
+  }
+  
+  .langButton {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+}

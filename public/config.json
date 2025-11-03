@@ -1,0 +1,45 @@
+{
+  "brand_logo_url": "",
+  "theme_color": "#4285F4",
+  "default_language": "en",
+  "languages": {
+    "en": {
+      "language_direction": "ltr",
+      "tagline": "Your Personal AI Cooking Assistant",
+      "headline_step1": "Start Your Culinary Journey",
+      "subtext_step1": "Enter your mobile number to unlock thousands of recipes and cooking tips.",
+      "cta_step1": "SUBSCRIBE NOW",
+      "headline_step2": "Verify Your Number",
+      "subtext_step2": "We sent a verification code to your phone.",
+      "cta_step2": "CONFIRM",
+      "headline_thanks": "Welcome to AI Chef!",
+      "subtext_thanks": "Your subscription is now active. Start cooking delicious meals today!",
+      "cta_thanks": "START COOKING"
+    },
+    "ar": {
+      "language_direction": "rtl",
+      "tagline": "مساعدك الذكي للطبخ",
+      "headline_step1": "ابدأ رحلتك في عالم الطبخ",
+      "subtext_step1": "أدخل رقم الجوال للوصول إلى آلاف الوصفات ونصائح الطبخ",
+      "cta_step1": "اشترك الآن",
+      "headline_step2": "تحقق من رقمك",
+      "subtext_step2": "تم إرسال رمز التحقق إلى هاتفك",
+      "cta_step2": "تأكيد",
+      "headline_thanks": "مرحباً بك في الطاهي الذكي!",
+      "subtext_thanks": "اشتراكك الآن نشط. ابدأ بطهي وجبات لذيذة اليوم!",
+      "cta_thanks": "ابدأ الطبخ"
+    }
+  },
+
+  "country_code": "+966",
+  "service_name": "AI Chef Premium",
+  "operators": ["STC", "Mobily", "Zain"],
+
+  "price_text": "SAR 3/day (incl. VAT)",
+  "unsubscribe_text": "To cancel, send U27 to 600860",
+  "company_name": "Overseas Solutions LLC",
+  "company_address": "Beirut, Lebanon",
+  "terms_link": "/terms",
+  "privacy_link": "/privacy",
+  "contact_link": "/contact"
+}

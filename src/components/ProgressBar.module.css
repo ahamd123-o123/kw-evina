@@ -1,0 +1,32 @@
+.container {
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.stepText {
+  font-size: 13px;
+  color: #10b981;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.stepsContainer {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.stepBar {
+  height: 6px;
+  flex: 1;
+  border-radius: 3px;
+}
+
+.activeStep {
+  background-color: #10b981;
+}
+
+.inactiveStep {
+  background-color: #d1d5db;
+}

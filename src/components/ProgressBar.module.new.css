@@ -1,0 +1,49 @@
+.container {
+  padding: 16px 20px;
+  margin-bottom: 0;
+  background: #f0f6ff;
+}
+
+.stepText {
+  font-size: 13px;
+  color: #1e40af;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.stepsContainer {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.stepBar {
+  height: 6px;
+  border-radius: 3px;
+  flex: 1;
+  transition: background-color 0.3s ease;
+}
+
+.activeStep {
+  background-color: #10b981;
+}
+
+.inactiveStep {
+  background-color: #d1d5db;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 12px 16px;
+  }
+  
+  .stepText {
+    font-size: 12px;
+  }
+  
+  .stepBar {
+    height: 4px;
+  }
+}
