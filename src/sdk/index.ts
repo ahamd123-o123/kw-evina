@@ -106,7 +106,7 @@ class PyxisSDK {
       
       // ✅ CAMPAIGN DATA - Common fields from campaigns table (see campaign_user_sessions_schema.md)
       campaign_id: (this.campaign as any)?.id || undefined,              // campaigns.id → user_sessions.campaign_id
-      campaignId: this.campaign?.cid || urlParams.cid || undefined,      // campaigns.cid (for tracking)
+      cid: this.campaign?.cid || urlParams.cid || undefined,             // campaigns.cid (for tracking) - FIXED: was campaignId
       service_id: (this.campaign as any)?.service_id || undefined,       // campaigns.service_id → user_sessions.service_id
       service_name: (this.campaign as any)?.service_name || undefined,   // campaigns.service_name → user_sessions.service_name
       country_code: this.campaign?.country_code || undefined,             // campaigns.country_code → user_sessions.country_code
