@@ -65,7 +65,7 @@ class PyxisSDK {
       
       const response = await fetch(backendUrl, {
         headers: {
-          'X-API-Key': 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op'
+          'X-API-Key': SDK_CONFIG.apiKey
         }
       });
       
@@ -144,6 +144,7 @@ class PyxisSDK {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-API-Key': SDK_CONFIG.apiKey,
         },
         body: JSON.stringify(sessionData),
       });
@@ -195,7 +196,7 @@ class PyxisSDK {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op',  // TODO: Get from config
+          'X-API-Key': SDK_CONFIG.apiKey,
         },
         body: JSON.stringify(eventData),
       });
@@ -328,7 +329,7 @@ class PyxisSDK {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op',
+          'X-API-Key': SDK_CONFIG.apiKey,
         },
         body: JSON.stringify(saleData),
       });

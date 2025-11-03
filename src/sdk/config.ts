@@ -5,13 +5,14 @@
 
 export const SDK_CONFIG = {
   apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://13.49.0.231:3000/api',
+  apiKey: process.env.NEXT_PUBLIC_API_KEY || '',
   environment: process.env.NEXT_PUBLIC_ENVIRONMENT || 'production',
   isDevelopment: process.env.NEXT_PUBLIC_ENVIRONMENT === 'development',
   isProduction: process.env.NEXT_PUBLIC_ENVIRONMENT === 'production',
 };
 
 export const API_ENDPOINTS = {
-  campaign: `${SDK_CONFIG.apiBaseUrl}/campaign`,  // Backend uses /api/campaign/:cid
+  campaign: `${SDK_CONFIG.apiBaseUrl}/campaign/check`,  // Backend uses /api/campaign/check
   session: `${SDK_CONFIG.apiBaseUrl}/session`,
   sessionUpdate: `${SDK_CONFIG.apiBaseUrl}/session/update`,  // Backend uses /api/session/update
   track: `${SDK_CONFIG.apiBaseUrl}/track`,  // Backend uses /api/track
