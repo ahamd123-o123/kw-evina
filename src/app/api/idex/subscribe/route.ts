@@ -68,11 +68,15 @@ export async function POST(request: NextRequest) {
         trxId: trxId
       });
       
+      // Extract error code from IDEX response
+      // IDEX API returns: { errorCode: "8001022", errors: "..." } or { code: "8001022", ... }
+      const errorCode = data.errorCode || data.code || String(response.status);
+      
       // Return IDEX error response with specific error codes
       return NextResponse.json(
         {
-          error: data.errors || 'Subscription failed',
-          errorCode: data.errorCode || response.status,
+          error: data.errors || data.message || 'Subscription failed',
+          errorCode: errorCode,
         },
         { status: response.status }
       );

@@ -96,6 +96,10 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       if (otpData.trxId) {
         sessionStorage.setItem('idex_trxId', otpData.trxId);
         console.log('✅ OTP sent successfully, trxId:', otpData.trxId);
+        
+        // Update session with IDEX trxId as pubid
+        await pyxisSDK.updatePubId(otpData.trxId);
+        console.log('✅ Session updated with pubid (trxId)');
       }
       
       // 3️⃣ Track PIN SENT event

@@ -62,11 +62,15 @@ export async function POST(request: NextRequest) {
         mobileNumber: mobileNumber
       });
       
-      // Return IDEX error response
+      // Extract error code from IDEX response
+      // IDEX API returns: { errorCode: "8001022", errors: "..." } or { code: "8001022", ... }
+      const errorCode = data.errorCode || data.code || String(response.status);
+      
+      // Return IDEX error response with specific error code
       return NextResponse.json(
         {
-          error: data.errors || 'Failed to send OTP',
-          errorCode: data.errorCode || response.status,
+          error: data.errors || data.message || 'Failed to send OTP',
+          errorCode: errorCode,
         },
         { status: response.status }
       );

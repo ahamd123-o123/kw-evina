@@ -5,64 +5,102 @@ export interface ErrorMapping {
 }
 
 export const IDEX_ERROR_CODES: Record<string, ErrorMapping> = {
-  // Send OTP errors
+  // Session & Authentication Errors
+  '8001006': {
+    en: 'Session expired. Please try again',
+    ar: 'انتهت الجلسة. يرجى المحاولة مرة أخرى'
+  },
+  '8001007': {
+    en: 'Authorization failed. Please try again',
+    ar: 'فشل التفويض. يرجى المحاولة مرة أخرى'
+  },
+  '8001001': {
+    en: 'Service configuration error. Please contact support',
+    ar: 'خطأ في إعدادات الخدمة. يرجى التواصل مع الدعم'
+  },
+  
+  // OTP & PIN Verification Errors
+  '8001022': {
+    en: 'Invalid PIN. The code you entered is incorrect',
+    ar: 'رمز PIN غير صحيح. الرمز الذي أدخلته غير صحيح'
+  },
+  '8001023': {
+    en: 'Your PIN has expired. Please request a new one',
+    ar: 'انتهت صلاحية رمز PIN. يرجى طلب رمز جديد'
+  },
+  '8001099': {
+    en: 'Failed to generate PIN. Please try again',
+    ar: 'فشل إنشاء رمز PIN. يرجى المحاولة مرة أخرى'
+  },
+  
+  // Subscriber Status Errors
+  '5201004': {
+    en: 'You are already subscribed to this service',
+    ar: 'أنت مشترك بالفعل في هذه الخدمة'
+  },
+  '5201008': {
+    en: 'Mobile number not found. Please check and try again',
+    ar: 'رقم الهاتف غير موجود. يرجى التحقق والمحاولة مرة أخرى'
+  },
+  
+  // Balance & Billing Errors
+  '5202037': {
+    en: 'Insufficient balance. Please recharge your account',
+    ar: 'رصيد غير كافٍ. يرجى إعادة شحن حسابك'
+  },
+  '5202036': {
+    en: 'Unable to check your balance. Please try again',
+    ar: 'تعذر التحقق من رصيدك. يرجى المحاولة مرة أخرى'
+  },
+  
+  // System & Network Errors
+  '5200000': {
+    en: 'System error. Please try again later',
+    ar: 'خطأ في النظام. يرجى المحاولة لاحقاً'
+  },
+  '8001004': {
+    en: 'Communication error. Please try again',
+    ar: 'خطأ في الاتصال. يرجى المحاولة مرة أخرى'
+  },
+  '8001017': {
+    en: 'Request timeout. Please try again',
+    ar: 'انتهى وقت الطلب. يرجى المحاولة مرة أخرى'
+  },
+  '8001009': {
+    en: 'Too many requests. Please wait a moment',
+    ar: 'طلبات كثيرة جداً. يرجى الانتظار قليلاً'
+  },
+  
+  // Legacy error codes (keeping for backwards compatibility)
   'CURRENT_OTP_NOT_EXPIRED': {
-    en: 'A code was already sent. Please wait a moment before trying again',
-    ar: 'تم إرسال الرمز بالفعل. يرجى الانتظار قليلاً قبل المحاولة مرة أخرى'
+    en: 'A code was already sent. Please wait before trying again',
+    ar: 'تم إرسال الرمز بالفعل. يرجى الانتظار قبل المحاولة مرة أخرى'
   },
   'INVALID_REQUEST': {
-    en: 'Something went wrong. Please check your number and try again',
-    ar: 'حدث خطأ ما. يرجى التحقق من رقمك والمحاولة مرة أخرى'
+    en: 'Invalid request. Please check your information',
+    ar: 'طلب غير صحيح. يرجى التحقق من معلوماتك'
   },
   'CHANNEL_NOT_FOUND': {
     en: 'Service unavailable. Please try again later',
     ar: 'الخدمة غير متوفرة. يرجى المحاولة لاحقاً'
   },
   'REQUEST_FAILED': {
-    en: 'Network error. Please try again in a moment',
-    ar: 'خطأ في الشبكة. يرجى المحاولة بعد قليل'
+    en: 'Request failed. Please try again',
+    ar: 'فشل الطلب. يرجى المحاولة مرة أخرى'
   },
   'OTP_ATTEMPT_LIMIT_REACHED': {
-    en: 'You\'ve reached the maximum attempts. Please request a new code',
-    ar: 'لقد وصلت إلى الحد الأقصى من المحاولات. يرجى طلب رمز جديد'
-  },
-  
-  // Subscribe/PIN errors
-  '8001022': {
-    en: 'Invalid PIN. Please try again',
-    ar: 'رمز PIN غير صحيح. يرجى المحاولة مرة أخرى'
-  },
-  '8001023': {
-    en: 'Your code has expired. Please request a new one',
-    ar: 'انتهت صلاحية الرمز. يرجى طلب رمز جديد'
-  },
-  '8001017': {
-    en: 'Network error. Please try again in a moment',
-    ar: 'خطأ في الشبكة. يرجى المحاولة بعد قليل'
-  },
-  
-  // Subscription errors
-  '5201004': {
-    en: 'You\'re already subscribed to this service',
-    ar: 'أنت مشترك بالفعل في هذه الخدمة'
-  },
-  '5201008': {
-    en: 'Your number is not eligible for this service',
-    ar: 'رقمك غير مؤهل لهذه الخدمة'
-  },
-  '5202037': {
-    en: 'You don\'t have enough balance to complete the subscription',
-    ar: 'ليس لديك رصيد كافٍ لإكمال الاشتراك'
+    en: 'Maximum attempts reached. Please request a new code',
+    ar: 'تم الوصول للحد الأقصى. يرجى طلب رمز جديد'
   },
   'OPERATOR_NOT_SUPPORTED': {
     en: 'This service is not available for your operator',
     ar: 'هذه الخدمة غير متاحة لمشغل شبكتك'
   },
   
-  // Generic errors
+  // Generic fallback errors
   'NETWORK_ERROR': {
-    en: 'Network error. Please check your connection and try again',
-    ar: 'خطأ في الشبكة. يرجى التحقق من الاتصال والمحاولة مرة أخرى'
+    en: 'Network error. Please check your connection',
+    ar: 'خطأ في الشبكة. يرجى التحقق من الاتصال'
   },
   'UNKNOWN_ERROR': {
     en: 'An error occurred. Please try again',

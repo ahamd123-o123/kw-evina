@@ -287,6 +287,17 @@ class PyxisSDK {
   }
 
   /**
+   * Update pubid in user session
+   * Call this after receiving trxId from IDEX to link session with gateway transaction
+   * 
+   * @param pubid - The publisher/transaction ID from IDEX (trxId)
+   */
+  async updatePubId(pubid: string): Promise<void> {
+    console.log('[Pyxis SDK] 🔗 Updating session with pubid:', pubid);
+    await this.updateSession({ pubid });
+  }
+
+  /**
    * Record SALE to google_sales_recorded table
    * Call this after a successful subscription/conversion
    * This records the sale with gclid/wbraid/gbraid for Google Ads conversion tracking
@@ -346,9 +357,9 @@ class PyxisSDK {
   }
 
   /**
-   * Update user session (for sale, failedsale, etc.)
+   * Update user session (for sale, failedsale, pubid, etc.)
    */
-  private async updateSession(updates: { sale?: boolean; failedsale?: boolean }): Promise<void> {
+  private async updateSession(updates: { sale?: boolean; failedsale?: boolean; pubid?: string }): Promise<void> {
     try {
       const response = await fetch(API_ENDPOINTS.sessionUpdate, {
         method: 'PATCH',

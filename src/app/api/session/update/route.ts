@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const { suid, sale, failedsale } = body;
+    const { suid, sale, failedsale, pubid } = body;
 
-    console.log('📤 Session Update Request:', { suid, sale, failedsale });
+    console.log('📤 Session Update Request:', { suid, sale, failedsale, pubid });
 
     if (!suid) {
       console.error('❌ Missing SUID in request');
@@ -30,6 +30,10 @@ export async function PATCH(request: NextRequest) {
     
     if (failedsale !== undefined) {
       updatePayload.failedsale = failedsale;
+    }
+
+    if (pubid !== undefined) {
+      updatePayload.pubid = pubid;
     }
 
     console.log('📦 Update Payload:', updatePayload);
