@@ -28,16 +28,6 @@ export async function POST(request: NextRequest) {
     // Create Basic Auth header
     const basicAuth = Buffer.from(`${IDEX_USERNAME}:${IDEX_PASSWORD}`).toString('base64');
 
-    // Log request details
-    console.log('📤 IDEX Subscribe Request:', {
-      url: `${IDEX_API_URL}/rest/s1/gateway/subscribe`,
-      username: IDEX_USERNAME,
-      channelId: IDEX_CHANNEL_ID,
-      mobileNumber: mobileNumber,
-      authCode: authCode,
-      trxId: trxId
-    });
-
     // Call IDEX Subscribe API
     const response = await fetch(`${IDEX_API_URL}/rest/s1/gateway/subscribe`, {
       method: 'POST',
@@ -81,12 +71,6 @@ export async function POST(request: NextRequest) {
         { status: response.status }
       );
     }
-
-    // Log success
-    console.log('✅ IDEX Subscribe Success:', {
-      trxId: data.trxId,
-      responseData: data
-    });
 
     // Success - return trxId
     return NextResponse.json({
