@@ -71,7 +71,6 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       await pyxisSDK.trackValidMsisdn(fullMsisdn);
       
       // 2️⃣ Send OTP via IDEX API
-      console.log('📤 Sending OTP to:', fullMsisdn);
       const otpResponse = await fetch('/api/idex/send-otp', {
         method: 'POST',
         headers: {
@@ -95,11 +94,9 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       // Store trxId in sessionStorage for Step 2
       if (otpData.trxId) {
         sessionStorage.setItem('idex_trxId', otpData.trxId);
-        console.log('✅ OTP sent successfully, trxId:', otpData.trxId);
         
         // Update session with IDEX trxId as pubid
         await pyxisSDK.updatePubId(otpData.trxId);
-        console.log('✅ Session updated with pubid (trxId)');
       }
       
       // 3️⃣ Track PIN SENT event
@@ -149,7 +146,6 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       }
       
       // 5️⃣ Verify PIN with IDEX API
-      console.log('📤 Verifying PIN with IDEX...');
       const subscribeResponse = await fetch('/api/idex/subscribe', {
         method: 'POST',
         headers: {
@@ -179,18 +175,15 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
 
       // 6️⃣ Track VALID PIN event (subscription successful)
       await pyxisSDK.trackValidPin(fullMsisdn, pin);
-      console.log('✅ PIN verified successfully');
       
       // 7️⃣ Track SALE event (automatically after valid PIN)
       // This also updates user_sessions with sale=true and sale_timestamp
       await pyxisSDK.trackSale(fullMsisdn);
-      console.log('💰 SALE event tracked!');
       
       // 8️⃣ Record sale to google_sales_recorded table
       // This logs sale with gclid/wbraid/gbraid for Google Ads conversion tracking
       // SDK will automatically pull service_id, country_code from campaign data
       await pyxisSDK.recordSale(fullMsisdn);
-      console.log('📊 Sale recorded to google_sales_recorded table!');
       
       // Clear trxId from sessionStorage
       sessionStorage.removeItem('idex_trxId');

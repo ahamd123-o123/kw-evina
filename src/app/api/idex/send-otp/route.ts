@@ -28,14 +28,6 @@ export async function POST(request: NextRequest) {
     // Create Basic Auth header
     const basicAuth = Buffer.from(`${IDEX_USERNAME}:${IDEX_PASSWORD}`).toString('base64');
 
-    // Log request details (without password)
-    console.log('📤 IDEX Send OTP Request:', {
-      url: `${IDEX_API_URL}/rest/s1/gateway/subscribe/otp`,
-      username: IDEX_USERNAME,
-      channelId: IDEX_CHANNEL_ID,
-      mobileNumber: mobileNumber
-    });
-
     // Call IDEX API
     const response = await fetch(`${IDEX_API_URL}/rest/s1/gateway/subscribe/otp`, {
       method: 'POST',

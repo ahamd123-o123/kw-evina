@@ -8,13 +8,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // 🔍 LOG ALL DATA BEING SENT TO BACKEND (Server-side terminal log)
-    console.log('\n========================================');
-    console.log('📤 SESSION DATA BEING SENT TO BACKEND:');
-    console.log('========================================');
-    console.log(JSON.stringify(body, null, 2));
-    console.log('========================================\n');
-
     // Call the actual pyxis-track backend
     const backendUrl = process.env.NEXT_PUBLIC_PYXIS_TRACK_URL || 'http://localhost:3000';
     const apiKey = process.env.NEXT_PUBLIC_PYXIS_API_KEY || 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op';
@@ -37,7 +30,6 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await response.json();
-    console.log('[API] Session created:', result);
 
     return NextResponse.json(result);
   } catch (error) {

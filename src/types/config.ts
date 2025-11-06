@@ -25,7 +25,8 @@ export interface LandingPageConfig {
   price_text: string;
   unsubscribe_text: string;
   company_name: string;
-  company_address: string;
+  company_email: string;
+  company_address?: string; // Made optional since we're removing it from footer
   terms_link: string;
   privacy_link: string;
   contact_link: string;

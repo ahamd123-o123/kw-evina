@@ -5,8 +5,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { suid, msisdn, gclid, wbraid, gbraid, service_id, country_code, affiliate_name } = body;
 
-    console.log('📤 Sale Recording Request:', body);
-
     if (!suid || !msisdn) {
       console.error('❌ Missing required fields (suid, msisdn)');
       return NextResponse.json(
@@ -18,8 +16,6 @@ export async function POST(request: NextRequest) {
     // Backend API URL
     const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3000';
     const API_KEY = process.env.API_KEY || 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op';
-
-    console.log('🔧 Backend API URL:', BACKEND_API_URL);
 
     // Prepare sale payload
     const salePayload = {
@@ -33,8 +29,6 @@ export async function POST(request: NextRequest) {
       affiliate_name,
     };
 
-    console.log('📦 Sale Payload:', salePayload);
-
     // Call backend to record sale
     const response = await fetch(`${BACKEND_API_URL}/api/sale`, {
       method: 'POST',
@@ -45,10 +39,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(salePayload),
     });
 
-    console.log('📥 Backend Response Status:', response.status);
-
     const data = await response.json();
-    console.log('📥 Backend Response Data:', data);
 
     if (!response.ok) {
       console.error('❌ Backend API Error:', {
@@ -62,7 +53,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('✅ Sale Recorded Successfully');
     return NextResponse.json({ success: true, data });
 
   } catch (error) {

@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await response.json();
-    console.log('[API] Event tracked:', body.event_type, result);
 
     return NextResponse.json(result);
   } catch (error) {

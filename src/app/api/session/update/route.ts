@@ -5,8 +5,6 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const { suid, sale, failedsale, pubid } = body;
 
-    console.log('📤 Session Update Request:', { suid, sale, failedsale, pubid });
-
     if (!suid) {
       console.error('❌ Missing SUID in request');
       return NextResponse.json(
@@ -18,8 +16,6 @@ export async function PATCH(request: NextRequest) {
     // Backend API URL
     const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:3000';
     const API_KEY = process.env.API_KEY || 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op';
-
-    console.log('🔧 Backend API URL:', BACKEND_API_URL);
 
     // Prepare update payload (backend handles timestamps automatically on its side)
     const updatePayload: any = { suid };
@@ -36,8 +32,6 @@ export async function PATCH(request: NextRequest) {
       updatePayload.pubid = pubid;
     }
 
-    console.log('📦 Update Payload:', updatePayload);
-
     // Call backend to update session
     const response = await fetch(`${BACKEND_API_URL}/api/session/update`, {
       method: 'PATCH',
@@ -48,10 +42,7 @@ export async function PATCH(request: NextRequest) {
       body: JSON.stringify(updatePayload),
     });
 
-    console.log('📥 Backend Response Status:', response.status);
-
     const data = await response.json();
-    console.log('📥 Backend Response Data:', data);
 
     if (!response.ok) {
       console.error('❌ Backend API Error:', {
@@ -65,7 +56,6 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    console.log('✅ Session Updated Successfully');
     return NextResponse.json({ success: true, data });
 
   } catch (error) {

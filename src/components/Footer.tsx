@@ -28,7 +28,7 @@ export default function Footer({ config }: FooterProps) {
         </p>
         
         <p className={styles.companyInfo}>
-          Company: {config.company_name}, {config.company_address}
+          {config.company_name} | <a href={`mailto:${config.company_email}`} className={styles.link}>{config.company_email}</a>
         </p>
         
         <p className={styles.unsubscribe}>

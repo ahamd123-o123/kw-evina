@@ -5,40 +5,40 @@
   "languages": {
     "en": {
       "language_direction": "ltr",
-      "tagline": "Your Personal AI Cooking Assistant",
-      "headline_step1": "Start Your Culinary Journey",
-      "subtext_step1": "Enter your mobile number to unlock thousands of recipes and cooking tips.",
-      "cta_step1": "SUBSCRIBE NOW",
+      "tagline": "Premium Digital Services",
+      "headline_step1": "Get Started",
+      "subtext_step1": "Enter your mobile number to subscribe",
+      "cta_step1": "CONTINUE",
       "headline_step2": "Verify Your Number",
-      "subtext_step2": "We sent a verification code to your phone.",
+      "subtext_step2": "Enter the verification code sent to your phone",
       "cta_step2": "CONFIRM",
-      "headline_thanks": "Welcome to AI Chef!",
-      "subtext_thanks": "Your subscription is now active. Start cooking delicious meals today!",
-      "cta_thanks": "START COOKING"
+      "headline_thanks": "Welcome!",
+      "subtext_thanks": "Your subscription is now active",
+      "cta_thanks": "GET STARTED"
     },
     "ar": {
       "language_direction": "rtl",
-      "tagline": "مساعدك الذكي للطبخ",
-      "headline_step1": "ابدأ رحلتك في عالم الطبخ",
-      "subtext_step1": "أدخل رقم الجوال للوصول إلى آلاف الوصفات ونصائح الطبخ",
-      "cta_step1": "اشترك الآن",
+      "tagline": "خدمات رقمية متميزة",
+      "headline_step1": "ابدأ الآن",
+      "subtext_step1": "أدخل رقم الجوال للاشتراك",
+      "cta_step1": "متابعة",
       "headline_step2": "تحقق من رقمك",
-      "subtext_step2": "تم إرسال رمز التحقق إلى هاتفك",
+      "subtext_step2": "أدخل رمز التحقق المرسل إلى هاتفك",
       "cta_step2": "تأكيد",
-      "headline_thanks": "مرحباً بك في الطاهي الذكي!",
-      "subtext_thanks": "اشتراكك الآن نشط. ابدأ بطهي وجبات لذيذة اليوم!",
-      "cta_thanks": "ابدأ الطبخ"
+      "headline_thanks": "مرحباً!",
+      "subtext_thanks": "اشتراكك الآن نشط",
+      "cta_thanks": "ابدأ الآن"
     }
   },
 
   "country_code": "+966",
   "service_name": "AI Chef Premium",
-  "operators": ["STC", "Mobily", "Zain"],
+  "operators": ["Mobily"],
 
   "price_text": "SAR 3/day (incl. VAT)",
   "unsubscribe_text": "To cancel, send U27 to 600860",
-  "company_name": "Overseas Solutions LLC",
-  "company_address": "Beirut, Lebanon",
+  "company_name": "Overseas MCC",
+  "company_email": "info@playcheaply.com",
   "terms_link": "/terms",
   "privacy_link": "/privacy",
   "contact_link": "/contact"

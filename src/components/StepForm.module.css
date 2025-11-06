@@ -8,8 +8,8 @@
 
 .card {
   background: #ffffff;
-  border-radius: 24px;
-  padding: 48px 32px;
+  border-radius: 20px;
+  padding: 32px 28px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   width: 100%;
   max-width: 420px;
@@ -17,44 +17,44 @@
 }
 
 .headline {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   color: #1f2937;
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0;
   line-height: 1.2;
 }
 
 .subtext {
-  font-size: 18px;
+  font-size: 15px;
   color: #6b7280;
-  margin: 0 0 48px 0;
-  line-height: 1.5;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
 }
 
 .iconContainer {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   display: flex;
   justify-content: center;
 }
 
 .downloadIcon {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   background: var(--theme-color, #4285F4);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 48px;
+  font-size: 40px;
   animation: pulse 2s ease-in-out infinite;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .downloadIcon svg {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
 }
 
 .downloadIcon:hover {

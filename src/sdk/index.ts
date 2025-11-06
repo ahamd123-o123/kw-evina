@@ -18,21 +18,16 @@ class PyxisSDK {
   async initialize(): Promise<void> {
     if (typeof window === 'undefined') return;
 
-    console.log('[Pyxis SDK] Initializing...', SDK_CONFIG);
-
     // Get or create SUID
     this.suid = getOrCreateSUID();
-    console.log('[Pyxis SDK] SUID:', this.suid);
 
     // Check for cached campaign
     const cachedCampaign = getSessionData<CampaignData>(STORAGE_KEYS.campaign);
     
     if (cachedCampaign) {
       this.campaign = cachedCampaign;
-      console.log('[Pyxis SDK] Using cached campaign from sessionStorage:', this.campaign);
     } else {
       // Fetch campaign data from backend
-      console.log('[Pyxis SDK] No cached campaign, fetching from backend...');
       await this.fetchCampaign();
     }
 
@@ -43,7 +38,6 @@ class PyxisSDK {
     await this.trackEvent('impression');
     
     this.sessionInitialized = true;
-    console.log('[Pyxis SDK] Initialized successfully');
   }
 
   /**
@@ -61,7 +55,6 @@ class PyxisSDK {
     try {
       // ✅ Call backend directly (per FRONTEND_GUIDE.md section 3)
       const backendUrl = `${SDK_CONFIG.apiBaseUrl}/campaign/${urlParams.cid}`;
-      console.log('[Pyxis SDK] 🔍 Fetching campaign from REAL backend:', backendUrl);
       
       const response = await fetch(backendUrl, {
         headers: {
@@ -80,8 +73,6 @@ class PyxisSDK {
       
       this.campaign = campaignData;
       setSessionData(STORAGE_KEYS.campaign, campaignData);
-      
-      console.log('[Pyxis SDK] ✅ Campaign fetched from REAL backend database:', this.campaign);
     } catch (error) {
       console.error('[Pyxis SDK] ❌ Failed to fetch campaign:', error);
     }
@@ -93,10 +84,6 @@ class PyxisSDK {
   private async createSession(): Promise<void> {
     const urlParams = getURLParams();
     const deviceInfo = getDeviceInfo();
-
-    console.log('[DEBUG] Campaign data:', JSON.stringify(this.campaign, null, 2));
-    console.log('[DEBUG] URL params:', urlParams);
-    console.log('[DEBUG] Device info:', deviceInfo);
 
     const sessionData = {
       // ✅ REQUIRED FIELDS (ONLY 3!) - Per FRONTEND_GUIDE.md
@@ -137,8 +124,6 @@ class PyxisSDK {
       // ❌ DO NOT SEND device/browser info - Backend extracts from userAgent automatically
     };
 
-    console.log('[Pyxis SDK] 🔍 SESSION DATA BEING SENT:', JSON.stringify(sessionData, null, 2));
-
     try {
       const response = await fetch(API_ENDPOINTS.session, {
         method: 'POST',
@@ -154,7 +139,6 @@ class PyxisSDK {
       }
 
       const result = await response.json();
-      console.log('[Pyxis SDK] Session created:', result);
     } catch (error) {
       console.error('[Pyxis SDK] Failed to create session:', error);
     }
@@ -185,12 +169,6 @@ class PyxisSDK {
       ...additionalData,
     };
 
-    console.log('========================================');
-    console.log(`📊 TRACKING EVENT: ${eventType.toUpperCase()}`);
-    console.log('========================================');
-    console.log(JSON.stringify(eventData, null, 2));
-    console.log('========================================');
-
     try {
       const response = await fetch(API_ENDPOINTS.track, {
         method: 'POST',
@@ -206,7 +184,6 @@ class PyxisSDK {
       }
 
       const result = await response.json();
-      console.log('[Pyxis SDK] Event tracked:', eventType, result);
     } catch (error) {
       console.error('[Pyxis SDK] Failed to track event:', error);
     }
@@ -216,7 +193,6 @@ class PyxisSDK {
    * Track VALID MSISDN event when user enters a valid phone number
    */
   async trackValidMsisdn(msisdn: string): Promise<void> {
-    console.log('[Pyxis SDK] 📱 Valid MSISDN entered:', msisdn);
     await this.trackEvent('valid_msisdn', { msisdn });
   }
 
@@ -225,7 +201,6 @@ class PyxisSDK {
    * Call this after successfully requesting PIN from gateway
    */
   async trackPinSent(msisdn: string): Promise<void> {
-    console.log('[Pyxis SDK] 📨 PIN sent to:', msisdn);
     await this.trackEvent('pin_sent', { msisdn });
   }
 
@@ -233,7 +208,6 @@ class PyxisSDK {
    * Track PIN SUBMITTED event when user enters PIN (before validation)
    */
   async trackPinSubmitted(msisdn: string, pin: string): Promise<void> {
-    console.log('[Pyxis SDK] 🔑 PIN submitted:', pin);
     await this.trackEvent('pin_submitted', { msisdn, pin });
   }
 
@@ -242,7 +216,6 @@ class PyxisSDK {
    * Call this after successfully verifying PIN with gateway
    */
   async trackValidPin(msisdn: string, pin: string): Promise<void> {
-    console.log('[Pyxis SDK] ✅ Valid PIN confirmed');
     await this.trackEvent('valid_pin', { msisdn, pin });
   }
 
@@ -251,8 +224,6 @@ class PyxisSDK {
    * Also updates user_sessions table with sale=true and sale_timestamp
    */
   async trackSale(msisdn: string): Promise<void> {
-    console.log('[Pyxis SDK] 💰 SALE event tracked!');
-    
     // Track sale event
     await this.trackEvent('sale', { msisdn });
     
@@ -265,7 +236,6 @@ class PyxisSDK {
    * Call this when user enters wrong PIN or PIN verification fails
    */
   async trackInvalidPin(msisdn: string, pin: string): Promise<void> {
-    console.log('[Pyxis SDK] ❌ Invalid PIN entered');
     await this.trackEvent('invalid_pin', { msisdn, pin });
   }
 
@@ -274,8 +244,6 @@ class PyxisSDK {
    * Updates user_sessions table with failedsale=true
    */
   async trackFailedSale(msisdn: string): Promise<void> {
-    console.log('[Pyxis SDK] ❌ FAILED SALE tracked');
-    
     // Track failed sale event
     await this.trackEvent('failed_sale', { msisdn });
     
@@ -293,7 +261,6 @@ class PyxisSDK {
    * @param pubid - The publisher/transaction ID from IDEX (trxId)
    */
   async updatePubId(pubid: string): Promise<void> {
-    console.log('[Pyxis SDK] 🔗 Updating session with pubid:', pubid);
     await this.updateSession({ pubid });
   }
 
@@ -329,12 +296,6 @@ class PyxisSDK {
       affiliate_name: options?.affiliate_name || undefined,
     };
 
-    console.log('========================================');
-    console.log('💰 RECORDING SALE TO GOOGLE_SALES_RECORDED');
-    console.log('========================================');
-    console.log(JSON.stringify(saleData, null, 2));
-    console.log('========================================');
-
     try {
       const response = await fetch(API_ENDPOINTS.sale, {
         method: 'POST',
@@ -350,7 +311,6 @@ class PyxisSDK {
       }
 
       const result = await response.json();
-      console.log('[Pyxis SDK] ✅ Sale recorded successfully:', result);
     } catch (error) {
       console.error('[Pyxis SDK] ❌ Failed to record sale:', error);
     }
@@ -378,8 +338,6 @@ class PyxisSDK {
         // Don't throw - just log the error to prevent infinite loops
         return;
       }
-
-      console.log('[Pyxis SDK] ✅ Session updated:', updates);
     } catch (error) {
       console.error('[Pyxis SDK] Error updating session:', error);
       // Don't throw - just log the error to prevent infinite loops
