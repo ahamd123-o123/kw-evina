@@ -271,7 +271,12 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
               disabled={isLoading || !msisdn.trim()}
               className={styles.ctaButton}
             >
-              {isLoading ? 'Loading...' : currentContent.cta_step1}
+              {isLoading ? 'Loading...' : (
+                <>
+                  <span className={styles.ctaMain}>CONTINUE TO</span>{' '}
+                  <span className={styles.ctaSub}>Subscribe</span>
+                </>
+              )}
             </button>
           </form>
         </div>
