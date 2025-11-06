@@ -33,7 +33,8 @@ export default function Home() {
         
         // Merge campaign data with config
         if (campaignData) {
-          loadedConfig.service_name = campaignData.name;
+          // Use service_name from config.json instead of campaign name
+          // loadedConfig.service_name already set from config.json
           
           // Keep the numeric country code format from config.json
           // Don't overwrite with campaign's country_code (which might be "SA")
