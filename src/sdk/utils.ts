@@ -17,15 +17,18 @@ export function generateUUID(): string {
 
 /**
  * Get or create SUID (Session Unique ID)
+ * SUID is session-based - new SUID for each funnel entry (ad click)
+ * Persists only during current session (tab/window lifetime)
  */
 export function getOrCreateSUID(): string {
   if (typeof window === 'undefined') return '';
   
-  let suid = localStorage.getItem(STORAGE_KEYS.suid);
+  // Use sessionStorage (cleared when tab/window closes or page refresh)
+  let suid = sessionStorage.getItem(STORAGE_KEYS.suid);
   
   if (!suid) {
     suid = generateUUID();
-    localStorage.setItem(STORAGE_KEYS.suid, suid);
+    sessionStorage.setItem(STORAGE_KEYS.suid, suid);
   }
   
   return suid;

@@ -71,6 +71,8 @@ class PyxisSDK {
       // Backend returns { success: true, campaign: {...}, traceId: "..." }
       const campaignData = data.campaign || data;
       
+      console.error('[Pyxis SDK] Campaign Data:', JSON.stringify(campaignData, null, 2));
+      
       this.campaign = campaignData;
       setSessionData(STORAGE_KEYS.campaign, campaignData);
     } catch (error) {
@@ -84,6 +86,14 @@ class PyxisSDK {
   private async createSession(): Promise<void> {
     const urlParams = getURLParams();
     const deviceInfo = getDeviceInfo();
+
+    // DEBUG: Log campaign data before creating session
+    console.error('[Pyxis SDK] Creating session with campaign:', {
+      id: (this.campaign as any)?.id,
+      cid: this.campaign?.cid,
+      service_id: (this.campaign as any)?.service_id,
+      service_name: (this.campaign as any)?.service_name
+    });
 
     const sessionData = {
       // ✅ REQUIRED FIELDS (ONLY 3!) - Per FRONTEND_GUIDE.md
@@ -161,7 +171,7 @@ class PyxisSDK {
       event_type: eventType,
       
       // ✅ CAMPAIGN DATA - Common fields from campaigns table
-      campaign_id: (this.campaign as any)?.cid || undefined,
+      campaign_id: (this.campaign as any)?.id || undefined,  // FIXED: was .cid (string), should be .id (number)
       service_id: (this.campaign as any)?.service_id || undefined,
       service_name: (this.campaign as any)?.service_name || undefined,
       
@@ -194,6 +204,14 @@ class PyxisSDK {
    */
   async trackValidMsisdn(msisdn: string): Promise<void> {
     await this.trackEvent('valid_msisdn', { msisdn });
+  }
+
+  /**
+   * Track INVALID MSISDN event when user enters an invalid phone number
+   * Call this when validation fails (format error or API rejection)
+   */
+  async trackInvalidMsisdn(msisdn: string, reason?: string): Promise<void> {
+    await this.trackEvent('invalid_msisdn', { msisdn, reason });
   }
 
   /**

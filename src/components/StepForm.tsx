@@ -47,8 +47,21 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
     
     if (!msisdn.trim()) return;
     
+    // Get numeric country code (remove + prefix)
+    const numericCountryCode = config.country_code.replace('+', '');
+    
+    // Clean user input: remove non-digits
+    const cleanInput = msisdn.replace(/\D/g, '');
+    
+    // Build full MSISDN: only add country code if user didn't include it
+    const fullMsisdn = cleanInput.startsWith(numericCountryCode) 
+      ? cleanInput 
+      : numericCountryCode + cleanInput;
+
     // Validate MSISDN
     if (!isValidMsisdn(msisdn)) {
+      // Track invalid MSISDN event (format validation failed)
+      await pyxisSDK.trackInvalidMsisdn(fullMsisdn, 'format_validation_failed');
       setError('Please enter a valid mobile number (e.g., ' + getSaudiMobileFormat() + ')');
       return;
     }
@@ -56,21 +69,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
     setIsLoading(true);
     
     try {
-      // 1️⃣ Track valid MSISDN event
-      // Get numeric country code (remove + prefix)
-      const numericCountryCode = config.country_code.replace('+', '');
-      
-      // Clean user input: remove non-digits
-      const cleanInput = msisdn.replace(/\D/g, '');
-      
-      // Build full MSISDN: only add country code if user didn't include it
-      const fullMsisdn = cleanInput.startsWith(numericCountryCode) 
-        ? cleanInput 
-        : numericCountryCode + cleanInput;
-      
-      await pyxisSDK.trackValidMsisdn(fullMsisdn);
-      
-      // 2️⃣ Send OTP via IDEX API
+      // Send OTP via IDEX API
       const otpResponse = await fetch('/api/idex/send-otp', {
         method: 'POST',
         headers: {
@@ -84,13 +83,19 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       const otpData = await otpResponse.json();
 
       if (!otpResponse.ok) {
-        // Handle IDEX error codes
+        // Track invalid MSISDN event (API rejected)
         const errorCode = otpData.errorCode || otpData.error;
+        await pyxisSDK.trackInvalidMsisdn(fullMsisdn, `api_rejected_${errorCode}`);
+        
+        // Handle IDEX error codes
         const currentLang = config.default_language as 'en' | 'ar';
         setError(getErrorMessage(errorCode, currentLang));
         return;
       }
 
+      // Track valid MSISDN event (API accepted)
+      await pyxisSDK.trackValidMsisdn(fullMsisdn);
+      
       // Store trxId in sessionStorage for Step 2
       if (otpData.trxId) {
         sessionStorage.setItem('idex_trxId', otpData.trxId);
@@ -99,7 +104,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
         await pyxisSDK.updatePubId(otpData.trxId);
       }
       
-      // 3️⃣ Track PIN SENT event
+      // Track PIN SENT event
       await pyxisSDK.trackPinSent(fullMsisdn);
       onNextStep();
       
