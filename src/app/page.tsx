@@ -28,22 +28,8 @@ export default function Home() {
         // Load base configuration
         const loadedConfig = await ConfigLoader.loadConfig();
         
-        // Get campaign data from SDK
-        const campaignData = pyxisSDK.getCampaign();
-        
-        // Merge campaign data with config
-        if (campaignData) {
-          // Use service_name from config.json instead of campaign name
-          // loadedConfig.service_name already set from config.json
-          
-          // Keep the numeric country code format from config.json
-          // Don't overwrite with campaign's country_code (which might be "SA")
-          // loadedConfig.country_code stays as "+966" from config.json
-          
-          // Update price text (you can customize this based on your pricing model)
-          const currency = campaignData.country_code === 'SA' ? 'SAR' : 'USD';
-          loadedConfig.price_text = `${campaignData.target_cpa} ${currency}/week`;
-        }
+        // Don't merge campaign data - use ONLY config.json
+        // All content (service_name, price_text, etc.) comes from config.json
         
         setConfig(loadedConfig);
         
