@@ -35,7 +35,7 @@ export interface SessionData {
   binom_cid?: string;
   ad_name?: string;
   flow_name?: string;
-  campaign_id?: number;
+  cid?: string;  // Changed from campaign_id to cid
   affiliate_id?: string;
   platform?: string;
   ip?: string;
@@ -55,7 +55,7 @@ export interface TrackEventPayload {
   timestamp: string;
   country_code?: string;
   operator_code?: string;
-  campaign_id?: number;
+  cid?: string;  // Changed from campaign_id to cid
   affiliate_id?: string;
   flow_name?: string;
   ad_name?: string;
@@ -73,6 +73,20 @@ export interface URLParams {
   gclid?: string;      // Google Click ID (web/Android)
   wbraid?: string;     // Google web attribution (iOS 14.5+)
   gbraid?: string;     // Google app attribution (iOS 14.5+)
+  
+  // Google Ads campaign parameters
+  campaignid?: string;
+  adgroupid?: string;
+  creative?: string;
+  device?: string;
+  keyword?: string;
+  
+  // UTM parameters
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
   
   click_id?: string;
   binom_cid?: string;

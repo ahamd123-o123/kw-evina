@@ -89,7 +89,6 @@ class PyxisSDK {
 
     // DEBUG: Log campaign data before creating session
     console.error('[Pyxis SDK] Creating session with campaign:', {
-      id: (this.campaign as any)?.id,
       cid: this.campaign?.cid,
       service_id: (this.campaign as any)?.service_id,
       service_name: (this.campaign as any)?.service_name
@@ -101,9 +100,8 @@ class PyxisSDK {
       ip: 'unknown',  // Backend overrides with real IP
       userAgent: navigator.userAgent,
       
-      // ✅ CAMPAIGN DATA - Common fields from campaigns table (see campaign_user_sessions_schema.md)
-      campaign_id: (this.campaign as any)?.id || undefined,              // campaigns.id → user_sessions.campaign_id
-      cid: this.campaign?.cid || urlParams.cid || undefined,             // campaigns.cid (for tracking) - FIXED: was campaignId
+      // ✅ CAMPAIGN DATA - Backend now uses 'cid' instead of 'campaign_id'
+      cid: this.campaign?.cid || urlParams.cid || undefined,             // campaigns.cid → user_sessions.cid
       service_id: (this.campaign as any)?.service_id || undefined,       // campaigns.service_id → user_sessions.service_id
       service_name: (this.campaign as any)?.service_name || undefined,   // campaigns.service_name → user_sessions.service_name
       country_code: this.campaign?.country_code || undefined,             // campaigns.country_code → user_sessions.country_code
@@ -122,6 +120,20 @@ class PyxisSDK {
       gclid: urlParams.gclid || undefined,      // Google Click ID (Android/Web)
       wbraid: urlParams.wbraid || undefined,    // Google Web Attribution (iOS 14.5+)
       gbraid: urlParams.gbraid || undefined,    // Google App Attribution (iOS 14.5+)
+      
+      // ✅ GOOGLE ADS CAMPAIGN PARAMETERS
+      campaignid: urlParams.campaignid || undefined,
+      adgroupid: urlParams.adgroupid || undefined,
+      creative: urlParams.creative || undefined,
+      device: urlParams.device || undefined,
+      keyword: urlParams.keyword || undefined,
+      
+      // ✅ UTM PARAMETERS (standard tracking)
+      utm_source: urlParams.utm_source || undefined,
+      utm_medium: urlParams.utm_medium || undefined,
+      utm_campaign: urlParams.utm_campaign || undefined,
+      utm_content: urlParams.utm_content || undefined,
+      utm_term: urlParams.utm_term || undefined,
       
       // ✅ MARKETING DATA
       platform: urlParams.platform || 'web',
@@ -170,8 +182,8 @@ class PyxisSDK {
       suid: this.suid,  // Same SUID for all events in this session
       event_type: eventType,
       
-      // ✅ CAMPAIGN DATA - Common fields from campaigns table
-      campaign_id: (this.campaign as any)?.id || undefined,  // FIXED: was .cid (string), should be .id (number)
+      // ✅ CAMPAIGN DATA - Backend now uses 'cid' instead of 'campaign_id'
+      cid: this.campaign?.cid || undefined,
       service_id: (this.campaign as any)?.service_id || undefined,
       service_name: (this.campaign as any)?.service_name || undefined,
       

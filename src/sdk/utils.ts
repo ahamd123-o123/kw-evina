@@ -17,16 +17,17 @@ export function generateUUID(): string {
 
 /**
  * Get or create SUID (Session Unique ID)
- * SUID is session-based - new SUID for each funnel entry (ad click)
- * Persists only during current session (tab/window lifetime)
+ * SUID persists during funnel journey (step1 → step2 → success)
+ * but generates NEW SUID on page refresh/new entry
  */
 export function getOrCreateSUID(): string {
   if (typeof window === 'undefined') return '';
   
-  // Use sessionStorage (cleared when tab/window closes or page refresh)
+  // Check if SUID already exists in sessionStorage (same funnel session)
   let suid = sessionStorage.getItem(STORAGE_KEYS.suid);
   
   if (!suid) {
+    // Generate new SUID only if not exists
     suid = generateUUID();
     sessionStorage.setItem(STORAGE_KEYS.suid, suid);
   }
@@ -50,6 +51,20 @@ export function getURLParams(): URLParams {
     gclid: params.get('gclid') || undefined,        // Google Click ID (web/Android)
     wbraid: params.get('wbraid') || undefined,      // Google web attribution (iOS 14.5+)
     gbraid: params.get('gbraid') || undefined,      // Google app attribution (iOS 14.5+)
+    
+    // Google Ads campaign parameters
+    campaignid: params.get('campaignid') || undefined,
+    adgroupid: params.get('adgroupid') || undefined,
+    creative: params.get('creative') || undefined,
+    device: params.get('device') || undefined,
+    keyword: params.get('keyword') || undefined,
+    
+    // UTM parameters (standard tracking)
+    utm_source: params.get('utm_source') || undefined,
+    utm_medium: params.get('utm_medium') || undefined,
+    utm_campaign: params.get('utm_campaign') || undefined,
+    utm_content: params.get('utm_content') || undefined,
+    utm_term: params.get('utm_term') || undefined,
     
     click_id: params.get('click_id') || params.get('clickid') || undefined,
     binom_cid: params.get('binom_cid') || params.get('binomcid') || undefined,
