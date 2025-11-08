@@ -1,30 +1,31 @@
 import Link from 'next/link';
-import { LandingPageConfig } from '@/types/config';
+import { LandingPageConfig, LanguageContent } from '@/types/config';
 import styles from './Footer.module.css';
 
 interface FooterProps {
   config: LandingPageConfig;
+  currentContent: LanguageContent;
 }
 
-export default function Footer({ config }: FooterProps) {
+export default function Footer({ config, currentContent }: FooterProps) {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
         <p className={styles.legalText}>
-          By subscribing, you agree to the{' '}
+          {currentContent.footer_legal_prefix}{' '}
           <Link href={config.terms_link} className={styles.link}>
-            Terms & Conditions
+            {currentContent.footer_terms}
           </Link>{' '}
-          and{' '}
+          {currentContent.footer_and}{' '}
           <Link href={config.privacy_link} className={styles.link}>
-            Privacy Policy
+            {currentContent.footer_privacy}
           </Link>.
         </p>
         
         <p className={styles.serviceInfo}>
-          Service: <span className={styles.highlight}>{config.service_name}</span> |{' '}
-          Price: <span className={styles.highlight}>{config.price_text}</span> |{' '}
-          Available for {config.operators.join(', ')}.
+          {currentContent.footer_service} <span className={styles.highlight}>{config.service_name}</span> |{' '}
+          {currentContent.footer_price} <span className={styles.highlight}>{config.price_text}</span> |{' '}
+          {currentContent.footer_available} {config.operators.join(', ')}.
         </p>
         
         <p className={styles.companyInfo}>
@@ -32,7 +33,7 @@ export default function Footer({ config }: FooterProps) {
         </p>
         
         <p className={styles.unsubscribe}>
-          {config.unsubscribe_text}
+          {currentContent.footer_unsubscribe}
         </p>
       </div>
     </footer>

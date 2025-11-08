@@ -1,8 +1,12 @@
 export interface LanguageContent {
-  language_direction: 'ltr' | 'rtl';
+  language_direction: "ltr" | "rtl";
   tagline: string;
   headline_step1: string;
   subtext_step1: string;
+  step1_label: string;
+  step2_label: string;
+  mobile_placeholder: string;
+  resend_pin: string;
   cta_step1: string;
   headline_step2: string;
   subtext_step2: string;
@@ -10,6 +14,14 @@ export interface LanguageContent {
   headline_thanks: string;
   subtext_thanks: string;
   cta_thanks: string;
+  footer_legal_prefix: string;
+  footer_terms: string;
+  footer_and: string;
+  footer_privacy: string;
+  footer_service: string;
+  footer_price: string;
+  footer_available: string;
+  footer_unsubscribe: string;
 }
 
 export interface LandingPageConfig {

@@ -4,6 +4,22 @@
   justify-content: center;
   align-items: flex-start;
   width: 100%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Backdrop blur when focus pulse is active */
+.container.blurBackdrop::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .card {
@@ -14,6 +30,29 @@
   width: 100%;
   max-width: 420px;
   text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+/* Focus Pulse Animation - When user clicks outside */
+.focusPulse {
+  animation: focusPulseAnimation 0.5s ease-in-out 4; /* Pulse 4 times over 2 seconds */
+}
+
+@keyframes focusPulseAnimation {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.16);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
 }
 
 .headline {
@@ -31,10 +70,64 @@
   line-height: 1.4;
 }
 
+/* Step Indicators */
+.stepIndicators {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+  padding: 0 4px;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.stepNumber {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--theme-color, #4285F4);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.stepText {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.stepInactive .stepNumber {
+  background: #d1d5db;
+  color: #6b7280;
+}
+
+.stepInactive .stepText {
+  color: #9ca3af;
+}
+
 .iconContainer {
   margin-bottom: 24px;
   display: flex;
   justify-content: center;
+}
+
+.secureIcon {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
 }
 
 .downloadIcon {
@@ -166,6 +259,25 @@
   }
 }
 
+.successMessage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  color: #16a34a;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  animation: slideIn 0.3s ease-out;
+}
+
+.successMessage svg {
+  flex-shrink: 0;
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;
@@ -175,46 +287,136 @@
 .phoneInput {
   display: flex;
   align-items: center;
-  border: 2px solid #d1d5db;
+  border: 2px solid #4285F4;
   border-radius: 8px;
   overflow: hidden;
   transition: border-color 0.2s ease;
   background: #ffffff;
   padding: 0;
+  direction: ltr;
+  flex-direction: row;
+  position: relative;
 }
 
 .phoneInput:focus-within {
-  border-color: #e5e7eb;
+  border-color: #4285F4;
 }
 
 .phoneIconInput {
-  padding: 16px 12px 16px 16px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: #1f2937;
   background: #f9fafb;
   border-right: 1px solid #d1d5db;
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.phoneIconInput img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
 }
 
 .countryCode {
-  padding: 16px 16px;
-  font-size: 16px;
+  padding: 16px 20px;
+  font-size: 20px;
   color: #1f2937;
   display: flex;
   align-items: center;
   font-weight: 500;
   background: #ffffff;
+  flex-shrink: 0;
 }
 
-.input {
+.validCheckmark {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  animation: checkmarkPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 10;
+}
+
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* PIN Input Wrapper */
+.pinInputWrapper {
+  display: flex;
+  align-items: center;
+  border: 2px solid #4285F4;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+  background: #ffffff;
+  padding: 0;
+  direction: ltr;
+  flex-direction: row;
+}
+
+.pinIconInput {
+  padding: 16px 12px 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border-right: 1px solid #d1d5db;
+  min-width: 60px;
+}
+
+.pinIconInput img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
+.pinInput {
   flex: 1;
-  padding: 16px 20px 16px 0;
-  font-size: 16px;
+  padding: 16px 16px;
+  font-size: 22px;
   border: none;
   outline: none;
   background: transparent;
   color: #1f2937;
+  text-align: center;
+  letter-spacing: 4px;
+  font-weight: 600;
+  width: 100%;
+  direction: ltr;
+}
+
+.input {
+  flex: 1;
+  padding: 16px 20px;
+  font-size: 20px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #1f2937;
+  font-weight: 500;
+  direction: ltr;
+  text-align: left;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
 }
 
 .input:not(.phoneInput .input) {
@@ -252,15 +454,38 @@
 
 .ctaMain {
   text-transform: uppercase;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .ctaSub {
   text-transform: none;
-  font-size: 11px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 500;
   opacity: 0.9;
+}
+
+/* Loading Spinner */
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .ctaButton:hover:not(:disabled) {
@@ -290,17 +515,90 @@
   color: var(--theme-color-dark, #2563eb);
 }
 
+/* Skeleton Loader Styles - Exact match to form layout */
+.skeletonHeadline {
+  height: 29px;
+  width: 60%;
+  margin: 0 auto 8px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeletonSubtext {
+  height: 21px;
+  width: 75%;
+  margin: 0 auto 24px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  animation-delay: 0.1s;
+}
+
+.skeletonIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  animation-delay: 0.2s;
+}
+
+.skeletonInputWrapper {
+  margin-bottom: 16px;
+}
+
+.skeletonInput {
+  height: 52px;
+  width: 100%;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  animation-delay: 0.3s;
+}
+
+.skeletonButton {
+  height: 52px;
+  width: 100%;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  animation-delay: 0.4s;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 /* Mobile responsive */
 @media (max-width: 480px) {
   .container {
     padding: 0 16px;
+    width: 100%;
+    max-width: 100%;
   }
   
   .card {
     padding: 24px 20px;
+    width: 100%;
   }
   
   .headline {
     font-size: 20px;
+  }
+  
+  .stepIndicators {
+    padding: 0 4px;
+    width: 100%;
   }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { LandingPageConfig, StepType, LanguageContent } from '@/types/config';
 import { pyxisSDK } from '@/sdk';
 import { getErrorMessage } from '@/utils/errorMessages';
@@ -11,13 +11,81 @@ interface StepFormProps {
   currentContent: LanguageContent;
   currentStep: StepType;
   onNextStep: () => void;
+  isSDKReady: boolean; // Track if SDK initialization is complete
 }
 
-export default function StepForm({ config, currentContent, currentStep, onNextStep }: StepFormProps) {
+export default function StepForm({ config, currentContent, currentStep, onNextStep, isSDKReady }: StepFormProps) {
   const [msisdn, setMsisdn] = useState('');
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [isFocusPulse, setIsFocusPulse] = useState(false);
+  const [isValidMsisdnInput, setIsValidMsisdnInput] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Handle click/touch outside the card - trigger focus pulse
+  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    // Check if click is outside the card
+    if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
+      setIsFocusPulse(true);
+      setTimeout(() => setIsFocusPulse(false), 2000); // Remove after 2 seconds
+    }
+  };
+
+  // Format and validate Saudi mobile number
+  // Always returns: 966 + 5 + 8 digits (total 12 digits)
+  // Handles: 49176434, 549176434, 0549176434, 966549176434, +966549176434
+  const formatSaudiMsisdn = (input: string): { isValid: boolean; fullMsisdn: string; errorMessage?: string } => {
+    // Remove all non-digits
+    const cleanInput = input.replace(/\D/g, '');
+    
+    // If empty
+    if (!cleanInput) {
+      return { isValid: false, fullMsisdn: '', errorMessage: 'Please enter a mobile number' };
+    }
+    
+    let mainDigits = cleanInput;
+    
+    // Remove country code if present (966)
+    if (mainDigits.startsWith('966')) {
+      mainDigits = mainDigits.substring(3);
+    }
+    
+    // Remove leading 0 if present (0549176434 -> 549176434)
+    if (mainDigits.startsWith('0')) {
+      mainDigits = mainDigits.substring(1);
+    }
+    
+    // Add 5 prefix if not present (49176434 -> 549176434)
+    if (!mainDigits.startsWith('5')) {
+      mainDigits = '5' + mainDigits;
+    }
+    
+    // Validate: should be exactly 9 digits starting with 5 (5xxxxxxxx)
+    if (mainDigits.length !== 9) {
+      return { 
+        isValid: false, 
+        fullMsisdn: '966' + mainDigits, 
+        errorMessage: 'Mobile number must be 9 digits (5xxxxxxxx)' 
+      };
+    }
+    
+    // Final validation: must start with 5 and be 9 digits
+    if (!mainDigits.startsWith('5') || !/^5\d{8}$/.test(mainDigits)) {
+      return { 
+        isValid: false, 
+        fullMsisdn: '966' + mainDigits, 
+        errorMessage: 'Mobile number must start with 5 (e.g., 549176434)' 
+      };
+    }
+    
+    // Return valid formatted number: 966 + 5xxxxxxxx
+    return { 
+      isValid: true, 
+      fullMsisdn: '966' + mainDigits 
+    };
+  };
 
   // Get Saudi mobile format (5xxxxxxxx)
   const getSaudiMobileFormat = (): string => {
@@ -47,22 +115,13 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
     
     if (!msisdn.trim()) return;
     
-    // Get numeric country code (remove + prefix)
-    const numericCountryCode = config.country_code.replace('+', '');
+    // Format and validate MSISDN
+    const { isValid, fullMsisdn, errorMessage } = formatSaudiMsisdn(msisdn);
     
-    // Clean user input: remove non-digits
-    const cleanInput = msisdn.replace(/\D/g, '');
-    
-    // Build full MSISDN: only add country code if user didn't include it
-    const fullMsisdn = cleanInput.startsWith(numericCountryCode) 
-      ? cleanInput 
-      : numericCountryCode + cleanInput;
-
-    // Validate MSISDN
-    if (!isValidMsisdn(msisdn)) {
+    if (!isValid) {
       // Track invalid MSISDN event (format validation failed)
       await pyxisSDK.trackInvalidMsisdn(fullMsisdn, 'format_validation_failed');
-      setError('Please enter a valid mobile number (e.g., ' + getSaudiMobileFormat() + ')');
+      setError(errorMessage || 'Please enter a valid mobile number');
       return;
     }
     
@@ -84,7 +143,8 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
 
       if (!otpResponse.ok) {
         // Track invalid MSISDN event (API rejected)
-        const errorCode = otpData.errorCode || otpData.error;
+        // API returns: {"error":"8001xxx","errorCode":400}
+        const errorCode = otpData.error || otpData.code || 'UNKNOWN_ERROR';
         await pyxisSDK.trackInvalidMsisdn(fullMsisdn, `api_rejected_${errorCode}`);
         
         // Handle IDEX error codes
@@ -129,16 +189,13 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
     setIsLoading(true);
     
     try {
-      // Get numeric country code (remove + prefix)
-      const numericCountryCode = config.country_code.replace('+', '');
+      // Format and validate MSISDN
+      const { isValid, fullMsisdn } = formatSaudiMsisdn(msisdn);
       
-      // Clean user input: remove non-digits
-      const cleanInput = msisdn.replace(/\D/g, '');
-      
-      // Build full MSISDN: only add country code if user didn't include it
-      const fullMsisdn = cleanInput.startsWith(numericCountryCode) 
-        ? cleanInput 
-        : numericCountryCode + cleanInput;
+      if (!isValid) {
+        setError('Invalid mobile number format');
+        return;
+      }
       
       // 4️⃣ Track PIN SUBMITTED event (when user enters PIN, before validation)
       await pyxisSDK.trackPinSubmitted(fullMsisdn, pin);
@@ -167,8 +224,11 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
 
       if (!subscribeResponse.ok) {
         // Handle IDEX error codes
-        const errorCode = subscribeData.errorCode || subscribeData.error;
+        // API returns: {"error":"8001023","errorCode":400}
+        // The actual IDEX error code is in the "error" field, not "errorCode"
+        const errorCode = subscribeData.error || subscribeData.code || 'UNKNOWN_ERROR';
         const currentLang = config.default_language as 'en' | 'ar';
+        
         setError(getErrorMessage(errorCode, currentLang));
         
         // Track invalid PIN event (wrong PIN, expired, already subscribed, etc.)
@@ -206,36 +266,24 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
 
   if (currentStep === 1) {
     return (
-      <div className={styles.container}>
-        <div className={styles.card}>
+      <div className={`${styles.container} ${isFocusPulse ? styles.blurBackdrop : ''}`} onClick={handleOutsideClick} onTouchEnd={handleOutsideClick}>
+        <div ref={cardRef} className={`${styles.card} ${isFocusPulse ? styles.focusPulse : ''}`}>
           <h1 className={styles.headline}>{currentContent.headline_step1}</h1>
           <p className={styles.subtext}>{currentContent.subtext_step1}</p>
           
           <div className={styles.iconContainer}>
-            <div className={styles.downloadIcon}>
-              <svg viewBox="0 0 24 24" fill="none" width="40" height="40">
-                <path 
-                  className={styles.downloadContainer} 
-                  d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" 
-                  stroke="currentColor" 
-                  strokeWidth="2"
-                />
-                <polyline 
-                  className={styles.downloadArrow} 
-                  points="7,10 12,15 17,10" 
-                  stroke="currentColor" 
-                  strokeWidth="2"
-                />
-                <line 
-                  className={styles.downloadLine} 
-                  x1="12" 
-                  y1="15" 
-                  x2="12" 
-                  y2="3" 
-                  stroke="currentColor" 
-                  strokeWidth="2"
-                />
-              </svg>
+            <img src="/assets/secure.png" alt="Secure" className={styles.secureIcon} />
+          </div>
+          
+          {/* Step Indicators */}
+          <div className={styles.stepIndicators}>
+            <div className={styles.stepItem}>
+              <div className={styles.stepNumber}>1</div>
+              <span className={styles.stepText}>{currentContent.step1_label}</span>
+            </div>
+            <div className={`${styles.stepItem} ${styles.stepInactive}`}>
+              <div className={styles.stepNumber}>2</div>
+              <span className={styles.stepText}>{currentContent.step2_label}</span>
             </div>
           </div>
           
@@ -251,23 +299,34 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
             <div className={styles.inputGroup}>
               <div className={styles.phoneInput}>
                 <div className={styles.phoneIconInput}>
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                    <path d="M19.23 15.26l-2.54-.29c-.61-.07-1.21.14-1.64.57l-1.84 1.84c-2.83-1.44-5.15-3.75-6.59-6.59l1.85-1.85c.43-.43.64-1.03.57-1.64l-.29-2.52c-.12-1.01-.97-1.77-1.99-1.77H5.03c-1.13 0-2.07.94-2 2.07.53 8.54 7.36 15.36 15.89 15.89 1.13.07 2.07-.87 2.07-2v-1.73c.01-1.01-.75-1.86-1.76-1.98z"/>
-                  </svg>
+                  <img src="/assets/phone.png" alt="Phone" width="20" height="20" />
                 </div>
-                <span className={styles.countryCode}>{config.country_code}</span>
+                <span className={styles.countryCode}>05</span>
                 <input
                   type="tel"
                   value={msisdn}
                   onChange={(e) => {
-                    setMsisdn(e.target.value);
+                    const inputValue = e.target.value;
+                    setMsisdn(inputValue);
                     setError(''); // Clear error on input change
+                    
+                    // Check if input is valid as user types
+                    const validation = formatSaudiMsisdn(inputValue);
+                    setIsValidMsisdnInput(validation.isValid);
                   }}
-                  placeholder={getSaudiMobileFormat()}
+                  placeholder={currentContent.mobile_placeholder}
                   className={styles.input}
                   required
                   autoFocus
                 />
+                {isValidMsisdnInput && (
+                  <div className={styles.validCheckmark}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="12" cy="12" r="10" fill="#22c55e" />
+                      <path d="M8 12l3 3 5-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -276,12 +335,12 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
               disabled={isLoading || !msisdn.trim()}
               className={styles.ctaButton}
             >
-              {isLoading ? 'Loading...' : (
-                <>
-                  <span className={styles.ctaMain}>CONTINUE TO</span>{' '}
-                  <span className={styles.ctaSub}>Subscribe</span>
-                </>
-              )}
+              {isLoading ? (
+                <div className={styles.loadingSpinner}>
+                  <div className={styles.spinner}></div>
+                  <span>Sending PIN...</span>
+                </div>
+              ) : currentContent.cta_step1}
             </button>
           </form>
         </div>
@@ -291,12 +350,32 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
 
   if (currentStep === 2) {
     return (
-      <div className={styles.container}>
-        <div className={styles.card}>
+      <div className={`${styles.container} ${isFocusPulse ? styles.blurBackdrop : ''}`} onClick={handleOutsideClick} onTouchEnd={handleOutsideClick}>
+        <div ref={cardRef} className={`${styles.card} ${isFocusPulse ? styles.focusPulse : ''}`}>
           <h1 className={styles.headline}>{currentContent.headline_step2}</h1>
           <p className={styles.subtext}>{currentContent.subtext_step2}</p>
           
+          {/* Step Indicators */}
+          <div className={styles.stepIndicators}>
+            <div className={`${styles.stepItem} ${styles.stepInactive}`}>
+              <div className={styles.stepNumber}>1</div>
+              <span className={styles.stepText}>{currentContent.step1_label}</span>
+            </div>
+            <div className={styles.stepItem}>
+              <div className={styles.stepNumber}>2</div>
+              <span className={styles.stepText}>{currentContent.step2_label}</span>
+            </div>
+          </div>
+          
           <form onSubmit={handleStep2Submit} className={styles.form}>
+            {successMessage && (
+              <div className={styles.successMessage}>
+                <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                {successMessage}
+              </div>
+            )}
             {error && (
               <div className={styles.errorMessage}>
                 <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
@@ -306,19 +385,24 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
               </div>
             )}
             <div className={styles.inputGroup}>
-              <input
-                type="text"
-                value={pin}
-                onChange={(e) => {
-                  setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
-                  setError(''); // Clear error on input change
-                }}
-                placeholder="Enter PIN code (4-6 digits)"
-                className={styles.input}
-                maxLength={6}
-                required
-                autoFocus
-              />
+              <div className={styles.pinInputWrapper}>
+                <div className={styles.pinIconInput}>
+                  <img src="/assets/pincon.png" alt="PIN" width="20" height="20" />
+                </div>
+                <input
+                  type="text"
+                  value={pin}
+                  onChange={(e) => {
+                    setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
+                    setError(''); // Clear error on input change
+                  }}
+                  placeholder="Enter PIN code"
+                  className={styles.pinInput}
+                  maxLength={6}
+                  required
+                  autoFocus
+                />
+              </div>
             </div>
             
             <button 
@@ -326,15 +410,81 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
               disabled={isLoading || !pin.trim()}
               className={styles.ctaButton}
             >
-              {isLoading ? 'Verifying...' : currentContent.cta_step2}
+              {isLoading ? (
+                <div className={styles.loadingSpinner}>
+                  <div className={styles.spinner}></div>
+                  <span>Verifying...</span>
+                </div>
+              ) : currentContent.cta_step2}
             </button>
             
             <button 
               type="button" 
               className={styles.resendButton}
-              onClick={() => {/* Implement resend logic */}}
+              onClick={async () => {
+                if (isLoading) return;
+                
+                setIsLoading(true);
+                setError('');
+                
+                try {
+                  // Format and validate MSISDN
+                  const { isValid, fullMsisdn } = formatSaudiMsisdn(msisdn);
+                  
+                  if (!isValid) {
+                    setError('Invalid mobile number format');
+                    setIsLoading(false);
+                    return;
+                  }
+                  
+                  // Resend OTP via IDEX API
+                  const otpResponse = await fetch('/api/idex/send-otp', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      mobileNumber: fullMsisdn,
+                    }),
+                  });
+
+                  const otpData = await otpResponse.json();
+
+                  if (!otpResponse.ok) {
+                    const currentLang = config.default_language as 'en' | 'ar';
+                    const errorCode = otpData.error || otpData.code || 'UNKNOWN_ERROR';
+                    setError(getErrorMessage(errorCode, currentLang));
+                    return;
+                  }
+
+                  // Store new trxId
+                  if (otpData.trxId) {
+                    sessionStorage.setItem('idex_trxId', otpData.trxId);
+                    await pyxisSDK.updatePubId(otpData.trxId);
+                  }
+                  
+                  // Track PIN SENT event
+                  await pyxisSDK.trackPinSent(fullMsisdn);
+                  
+                  // Show success message
+                  const currentLang = config.default_language as 'en' | 'ar';
+                  const successMsg = currentLang === 'ar' ? 'تم إرسال الرمز مرة أخرى' : 'PIN sent successfully';
+                  setSuccessMessage(successMsg);
+                  setError(''); // Clear any errors
+                  
+                  // Clear success message after 5 seconds
+                  setTimeout(() => setSuccessMessage(''), 5000);
+                } catch (error) {
+                  console.error('Error resending PIN:', error);
+                  const currentLang = config.default_language as 'en' | 'ar';
+                  setError(getErrorMessage('NETWORK_ERROR', currentLang));
+                } finally {
+                  setIsLoading(false);
+                }
+              }}
+              disabled={isLoading}
             >
-              Resend PIN
+              {currentContent.resend_pin}
             </button>
           </form>
         </div>

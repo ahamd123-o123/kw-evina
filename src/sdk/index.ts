@@ -71,8 +71,6 @@ class PyxisSDK {
       // Backend returns { success: true, campaign: {...}, traceId: "..." }
       const campaignData = data.campaign || data;
       
-      console.error('[Pyxis SDK] Campaign Data:', JSON.stringify(campaignData, null, 2));
-      
       this.campaign = campaignData;
       setSessionData(STORAGE_KEYS.campaign, campaignData);
     } catch (error) {
@@ -86,13 +84,6 @@ class PyxisSDK {
   private async createSession(): Promise<void> {
     const urlParams = getURLParams();
     const deviceInfo = getDeviceInfo();
-
-    // DEBUG: Log campaign data before creating session
-    console.error('[Pyxis SDK] Creating session with campaign:', {
-      cid: this.campaign?.cid,
-      service_id: (this.campaign as any)?.service_id,
-      service_name: (this.campaign as any)?.service_name
-    });
 
     const sessionData = {
       // ✅ REQUIRED FIELDS (ONLY 3!) - Per FRONTEND_GUIDE.md

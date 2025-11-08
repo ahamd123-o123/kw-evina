@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   creator: "Overseas MCC",
   publisher: "Overseas MCC",
   robots: "index, follow",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  themeColor: "#4285F4",
   openGraph: {
     type: "website",
     locale: "en_US",
