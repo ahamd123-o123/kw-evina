@@ -73,8 +73,10 @@ export interface URLParams {
   gclid?: string;      // Google Click ID (web/Android)
   wbraid?: string;     // Google web attribution (iOS 14.5+)
   gbraid?: string;     // Google app attribution (iOS 14.5+)
+  gad_source?: string; // Google Ads source
   
   // Google Ads campaign parameters
+  gad_campaignid?: string;  // Google Ads campaign ID (alternative param)
   campaignid?: string;
   adgroupid?: string;
   creative?: string;

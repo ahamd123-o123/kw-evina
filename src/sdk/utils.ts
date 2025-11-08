@@ -51,8 +51,10 @@ export function getURLParams(): URLParams {
     gclid: params.get('gclid') || undefined,        // Google Click ID (web/Android)
     wbraid: params.get('wbraid') || undefined,      // Google web attribution (iOS 14.5+)
     gbraid: params.get('gbraid') || undefined,      // Google app attribution (iOS 14.5+)
+    gad_source: params.get('gad_source') || undefined,  // Google Ads source
     
     // Google Ads campaign parameters
+    gad_campaignid: params.get('gad_campaignid') || undefined,  // Google Ads campaign ID (alternative)
     campaignid: params.get('campaignid') || undefined,
     adgroupid: params.get('adgroupid') || undefined,
     creative: params.get('creative') || undefined,
