@@ -111,9 +111,11 @@ class PyxisSDK {
       gclid: urlParams.gclid || undefined,      // Google Click ID (Android/Web)
       wbraid: urlParams.wbraid || undefined,    // Google Web Attribution (iOS 14.5+)
       gbraid: urlParams.gbraid || undefined,    // Google App Attribution (iOS 14.5+)
+      gad_source: urlParams.gad_source || undefined,  // Google Ads source
       
       // ✅ GOOGLE ADS CAMPAIGN PARAMETERS
-      campaignid: urlParams.campaignid || undefined,
+      // Note: utm_campaign and gad_campaignid both contain the Google Ads campaign ID
+      campaignid: urlParams.gad_campaignid || urlParams.utm_campaign || urlParams.campaignid || undefined,
       adgroupid: urlParams.adgroupid || undefined,
       creative: urlParams.creative || undefined,
       device: urlParams.device || undefined,
@@ -122,7 +124,7 @@ class PyxisSDK {
       // ✅ UTM PARAMETERS (standard tracking)
       utm_source: urlParams.utm_source || undefined,
       utm_medium: urlParams.utm_medium || undefined,
-      utm_campaign: urlParams.utm_campaign || undefined,
+      utm_campaign: urlParams.utm_campaign || undefined,  // Google Ads Campaign ID
       utm_content: urlParams.utm_content || undefined,
       utm_term: urlParams.utm_term || undefined,
       
