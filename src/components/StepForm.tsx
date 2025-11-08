@@ -299,7 +299,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
             <div className={styles.inputGroup}>
               <div className={styles.phoneInput}>
                 <div className={styles.phoneIconInput}>
-                  <img src="/assets/phone.png" alt="Phone" width="20" height="20" />
+                  <img src="/assets/phone.png" alt="Phone" width="28" height="28" />
                 </div>
                 <span className={styles.countryCode}>05</span>
                 <input

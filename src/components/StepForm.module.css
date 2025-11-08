@@ -289,7 +289,7 @@
   align-items: center;
   border: 2px solid #4285F4;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
   transition: border-color 0.2s ease;
   background: #ffffff;
   padding: 0;
@@ -303,15 +303,16 @@
 }
 
 .phoneIconInput {
-  padding: 16px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #1f2937;
   background: #f9fafb;
   border-right: 1px solid #d1d5db;
-  width: 60px;
   flex-shrink: 0;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
 .phoneIconInput img {
