@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,13 +12,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 5,
-  themeColor: "#4285F4",
-};
-
 export const metadata: Metadata = {
   title: "Subscribe to Premium Services | Overseas MCC",
   description: "Subscribe to premium digital content and services. Access exclusive games, entertainment, and more with mobile billing.",
@@ -27,6 +20,8 @@ export const metadata: Metadata = {
   creator: "Overseas MCC",
   publisher: "Overseas MCC",
   robots: "index, follow",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  themeColor: "#4285F4",
   openGraph: {
     type: "website",
     locale: "en_US",

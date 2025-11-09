@@ -30,9 +30,14 @@ export default function ThankYou({ config, currentContent }: ThankYouProps) {
         <h1 className={styles.headline}>{currentContent.headline_thanks}</h1>
         <p className={styles.subtext}>{currentContent.subtext_thanks}</p>
         
-        <button className={styles.ctaButton}>
+        <a 
+          href="https://ai-chefs.com" 
+          className={styles.ctaButton}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {currentContent.cta_thanks}
-        </button>
+        </a>
       </div>
     </div>
   );

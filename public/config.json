@@ -26,7 +26,7 @@
       "footer_service": "Service:",
       "footer_price": "Price:",
       "footer_available": "Available for",
-      "footer_unsubscribe": "To cancel, send U27 to 600860"
+      "footer_unsubscribe": "To unsubscribe, send U 241 to 670611"
     },
     "ar": {
       "language_direction": "rtl",
@@ -51,7 +51,7 @@
       "footer_service": "الخدمة:",
       "footer_price": "السعر:",
       "footer_available": "متاح لـ",
-      "footer_unsubscribe": "للإلغاء، أرسل U27 إلى 600860"
+      "footer_unsubscribe": "لإلغاء الاشتراك، أرسل غ 241 إلى 670611"
     }
   },
 
@@ -60,7 +60,7 @@
   "operators": ["Mobily"],
 
   "price_text": "SAR 3/day (incl. VAT)",
-  "unsubscribe_text": "To cancel, send U27 to 600860",
+  "unsubscribe_text": "To unsubscribe, send U 241 to 670611",
   "company_name": "Overseas MCC",
   "company_email": "info@playcheaply.com",
   "terms_link": "/terms",
