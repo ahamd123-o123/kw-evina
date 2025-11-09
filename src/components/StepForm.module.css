@@ -287,39 +287,26 @@
 .phoneInput {
   display: flex;
   align-items: center;
-  border: 2px solid #4285F4;
+  border: 2px solid #256df4;
   border-radius: 8px;
   overflow: hidden;
-  transition: border-color 0.2s ease;
-  background: #ffffff;
-  padding: 0;
-  direction: ltr;
-  flex-direction: row;
+  background-color: #fff;
+  height: 52px;
   position: relative;
+  direction: ltr;
 }
 
 .phoneInput:focus-within {
   border-color: #4285F4;
 }
 
-.phoneIconInput {
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #1f2937;
-  background: #f9fafb;
+.phone {
+  width: 52px;
+  height: 100%;
+  background: #f9fafb url("/assets/phone.png") no-repeat center center;
+  background-size: 22px;
   border-right: 1px solid #d1d5db;
-  min-width: 64px;
   flex-shrink: 0;
-}
-
-.phoneIconInput img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  display: block;
-  margin-left: 3rem;
 }
 
 .countryCode {
@@ -331,6 +318,22 @@
   font-weight: 500;
   background: #ffffff;
   flex-shrink: 0;
+}
+
+.textInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0 16px;
+  font-size: 18px;
+  color: #1f2937;
+  background: transparent;
+  direction: ltr;
+}
+
+.textInput::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
 }
 
 .validCheckmark {

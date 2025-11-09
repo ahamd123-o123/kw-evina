@@ -298,9 +298,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
             )}
             <div className={styles.inputGroup}>
               <div className={styles.phoneInput}>
-                <div className={styles.phoneIconInput}>
-                  <img src="/assets/phone.png" alt="Phone" width="20" height="20" />
-                </div>
+                <div className={styles.phone}></div>
                 <span className={styles.countryCode}>05</span>
                 <input
                   type="tel"
@@ -315,7 +313,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                     setIsValidMsisdnInput(validation.isValid);
                   }}
                   placeholder={currentContent.mobile_placeholder}
-                  className={styles.input}
+                  className={styles.textInput}
                   required
                   autoFocus
                 />
