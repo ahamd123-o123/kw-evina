@@ -72,6 +72,31 @@ export default function Home() {
     loadConfiguration();
   }, []);
 
+  // Handle browser back button
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const step = event.state?.step || 1;
+      setCurrentStep(step as StepType);
+    };
+
+    // Set initial history state
+    window.history.replaceState({ step: currentStep }, '');
+
+    // Listen for back/forward button
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  // Update history when step changes
+  useEffect(() => {
+    if (currentStep > 1 && currentStep < 3) {
+      window.history.pushState({ step: currentStep }, '');
+    }
+  }, [currentStep]);
+
   const handleLanguageChange = (lang: string) => {
     if (config && config.languages[lang]) {
       setCurrentLanguage(lang);
