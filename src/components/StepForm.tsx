@@ -340,6 +340,10 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                 </div>
               ) : currentContent.cta_step1}
             </button>
+            
+            <p className={styles.priceInfo}>
+              {currentContent.language_direction === 'rtl' ? config.price_text_ar : config.price_text}
+            </p>
           </form>
         </div>
       </div>

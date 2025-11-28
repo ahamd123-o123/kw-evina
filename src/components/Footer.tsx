@@ -22,9 +22,15 @@ export default function Footer({ config, currentContent }: FooterProps) {
           </Link>.
         </p>
         
+        <p className={styles.serviceDescription}>
+          {currentContent.footer_service_description}
+        </p>
+        
         <p className={styles.serviceInfo}>
           {currentContent.footer_service} <span className={styles.highlight}>{config.service_name}</span> |{' '}
-          {currentContent.footer_price} <span className={styles.highlight}>{config.price_text}</span> |{' '}
+          {currentContent.footer_price} <span className={styles.highlight}>
+            {currentContent.language_direction === 'rtl' ? config.price_text_ar : config.price_text}
+          </span> |{' '}
           {currentContent.footer_available} {config.operators.join(', ')}.
         </p>
         
@@ -34,6 +40,14 @@ export default function Footer({ config, currentContent }: FooterProps) {
         
         <p className={styles.unsubscribe}>
           {currentContent.footer_unsubscribe}
+        </p>
+        
+        <p className={styles.vatNotice}>
+          {currentContent.footer_vat_notice}
+        </p>
+        
+        <p className={styles.aboutService}>
+          {currentContent.footer_about_service}
         </p>
       </div>
     </footer>

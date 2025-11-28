@@ -11,13 +11,22 @@
 }
 
 .legalText,
+.serviceDescription,
 .serviceInfo,
 .companyInfo,
-.unsubscribe {
+.unsubscribe,
+.vatNotice {
   margin: 0 0 8px 0;
   font-size: 14px;
   color: #6b7280;
   line-height: 1.5;
+}
+
+.serviceDescription {
+  font-size: 13px;
+  color: #9ca3af;
+  font-style: italic;
+  margin-bottom: 12px;
 }
 
 .serviceInfo {
@@ -26,8 +35,24 @@
 }
 
 .unsubscribe {
-  margin-bottom: 0;
   font-weight: 400;
+}
+
+.vatNotice {
+  margin-bottom: 0;
+  font-size: 12px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.aboutService {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.6;
+  text-align: left;
 }
 
 .link {
@@ -51,9 +76,23 @@
   }
   
   .legalText,
+  .serviceDescription,
   .serviceInfo,
   .companyInfo,
-  .unsubscribe {
+  .unsubscribe,
+  .vatNotice {
     font-size: 11px;
+  }
+  
+  .serviceDescription {
+    font-size: 10px;
+  }
+  
+  .vatNotice {
+    font-size: 10px;
+  }
+  
+  .aboutService {
+    font-size: 10px;
   }
 }

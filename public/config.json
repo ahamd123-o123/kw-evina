@@ -12,7 +12,7 @@
       "step2_label": "Enter PIN Code",
       "mobile_placeholder": "Mobile number",
       "resend_pin": "Resend PIN",
-      "cta_step1": "CONTINUE",
+      "cta_step1": "SUBSCRIBE",
       "headline_step2": "Verify Your Number",
       "subtext_step2": "Enter the verification code sent to your phone",
       "cta_step2": "CONFIRM",
@@ -24,9 +24,13 @@
       "footer_and": "and",
       "footer_privacy": "Privacy Policy",
       "footer_service": "Service:",
+      "footer_service_description": "AI Chefs - Access to premium digital content and entertainment services",
       "footer_price": "Price:",
       "footer_available": "Available for",
-      "footer_unsubscribe": "To unsubscribe, send U 241 to 670611"
+      "footer_unsubscribe": "To unsubscribe, send U 241 to 670611",
+      "footer_vat_notice": "VAT amount has been deducted from prepaid users upon recharge",
+      "footer_about_service": "AI Chefs brings you thousands of recipes from around the world. Discover step-by-step cooking guides, video tutorials, and personalized meal suggestions powered by AI. Whether you're a beginner or a pro chef, explore new flavors and techniques daily.",
+      "footer_price_label": "Price:"
     },
     "ar": {
       "language_direction": "rtl",
@@ -37,7 +41,7 @@
       "step2_label": "أدخل رمز التحقق",
       "mobile_placeholder": "رقم الجوال",
       "resend_pin": "إعادة إرسال الرمز",
-      "cta_step1": "متابعة",
+      "cta_step1": "اشترك",
       "headline_step2": "تحقق من رقمك",
       "subtext_step2": "أدخل رمز التحقق المرسل إلى هاتفك",
       "cta_step2": "تأكيد",
@@ -49,9 +53,13 @@
       "footer_and": "و",
       "footer_privacy": "سياسة الخصوصية",
       "footer_service": "الخدمة:",
+      "footer_service_description": "AI Chefs - الوصول إلى المحتوى الرقمي والخدمات الترفيهية المميزة",
       "footer_price": "السعر:",
       "footer_available": "متاح لـ",
-      "footer_unsubscribe": "لإلغاء الاشتراك، أرسل غ 241 إلى 670611"
+      "footer_unsubscribe": "لإلغاء الاشتراك، أرسل غ 241 إلى 670611",
+      "footer_vat_notice": "تم خصم مبلغ ضريبة القيمة المضافة من مستخدمي الدفع المسبق عند إعادة الشحن",
+      "footer_about_service": "AI Chefs يقدم لك الآلاف من الوصفات من جميع أنحاء العالم. اكتشف أدلة الطبخ خطوة بخطوة، ودروس الفيديو، واقتراحات الوجبات الشخصية المدعومة بالذكاء الاصطناعي. سواء كنت مبتدئاً أو طاهياً محترفاً، استكشف نكهات وتقنيات جديدة يومياً.",
+      "footer_price_label": "السعر:"
     }
   },
 
@@ -59,7 +67,8 @@
   "service_name": "AI Chefs",
   "operators": ["Mobily"],
 
-  "price_text": "SAR 3/day (incl. VAT)",
+  "price_text": "3.45 SAR/day (incl. VAT)",
+  "price_text_ar": "3.45 ريال/يوم (شامل ضريبة القيمة المضافة)",
   "unsubscribe_text": "To unsubscribe, send U 241 to 670611",
   "company_name": "Overseas MCC",
   "company_email": "info@playcheaply.com",

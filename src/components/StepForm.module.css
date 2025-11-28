@@ -289,7 +289,7 @@
   align-items: center;
   border: 2px solid #256df4;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: hidden; /* Changed back to hidden to clip icon container */
   background-color: #fff;
   height: 52px;
   position: relative;
@@ -302,11 +302,17 @@
 
 .phone {
   width: 52px;
-  height: 100%;
+  height: 52px; /* Explicit height */
   background: #f9fafb url("/assets/phone.png") no-repeat center center;
-  background-size: 22px;
+  background-size: 24px;
+  background-position: center center; /* Ensure centered on all devices */
   border-right: 1px solid #d1d5db;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0; /* Remove any default margins */
+  padding: 0; /* Remove any default padding */
 }
 
 .countryCode {
@@ -503,6 +509,14 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.priceInfo {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #9ca3af;
 }
 
 .resendButton {

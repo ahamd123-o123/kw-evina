@@ -19,9 +19,12 @@ export interface LanguageContent {
   footer_and: string;
   footer_privacy: string;
   footer_service: string;
+  footer_service_description: string;
   footer_price: string;
   footer_available: string;
   footer_unsubscribe: string;
+  footer_vat_notice: string;
+  footer_about_service: string;
 }
 
 export interface LandingPageConfig {
@@ -35,6 +38,7 @@ export interface LandingPageConfig {
   service_name: string;
   operators: string[];
   price_text: string;
+  price_text_ar: string;
   unsubscribe_text: string;
   company_name: string;
   company_email: string;
