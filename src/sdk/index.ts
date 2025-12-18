@@ -272,7 +272,7 @@ class PyxisSDK {
     // Update session with failed sale flag
     await this.updateSession({ failedsale: true });
   
-    // NOTE: Session update disabled until backend creates /api/session/update endpoint  
+    // NOTE: Session update uses /api/u endpoint  
     // await this.updateSession({ failedsale: true });
   }
 

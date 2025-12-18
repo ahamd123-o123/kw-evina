@@ -33,7 +33,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Call backend to update session
-    const response = await fetch(`${BACKEND_API_URL}/api/session/update`, {
+    const response = await fetch(`${BACKEND_API_URL}/api/u`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

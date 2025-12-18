@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Call backend to record sale
-    const response = await fetch(`${BACKEND_API_URL}/api/sale`, {
+    const response = await fetch(`${BACKEND_API_URL}/api/c`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

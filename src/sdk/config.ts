@@ -14,9 +14,9 @@ export const SDK_CONFIG = {
 export const API_ENDPOINTS = {
   campaign: `${SDK_CONFIG.apiBaseUrl}/campaign/check`,  // Backend uses /api/campaign/check
   session: `${SDK_CONFIG.apiBaseUrl}/session`,
-  sessionUpdate: `${SDK_CONFIG.apiBaseUrl}/session/update`,  // Backend uses /api/session/update
-  track: `${SDK_CONFIG.apiBaseUrl}/track`,  // Backend uses /api/track
-  sale: `${SDK_CONFIG.apiBaseUrl}/sale`,  // Backend uses /api/sale
+  sessionUpdate: `${SDK_CONFIG.apiBaseUrl}/u`,  // Backend uses /api/u (was /api/session/update)
+  track: `${SDK_CONFIG.apiBaseUrl}/e`,  // Backend uses /api/e (was /api/track)
+  sale: `${SDK_CONFIG.apiBaseUrl}/c`,  // Backend uses /api/c (was /api/sale)
 };
 
 export const STORAGE_KEYS = {

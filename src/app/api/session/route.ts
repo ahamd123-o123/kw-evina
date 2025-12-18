@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
- * Session API Proxy - POST /api/session
+ * Session API Proxy - POST /api/session (proxies to /api/s on backend)
  * Creates/updates user session in pyxis-track backend
  */
 export async function POST(request: NextRequest) {
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     // Call the actual pyxis-track backend
     const backendUrl = process.env.NEXT_PUBLIC_PYXIS_TRACK_URL || 'http://localhost:3000';
     const apiKey = process.env.NEXT_PUBLIC_PYXIS_API_KEY || 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op';
-    const response = await fetch(`${backendUrl}/api/session`, {
+    const response = await fetch(`${backendUrl}/api/s`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
