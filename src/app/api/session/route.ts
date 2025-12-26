@@ -9,8 +9,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Call the actual pyxis-track backend
-    const backendUrl = process.env.NEXT_PUBLIC_PYXIS_TRACK_URL || 'http://localhost:3000';
-    const apiKey = process.env.NEXT_PUBLIC_PYXIS_API_KEY || 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op';
+    const backendUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+    const apiKey = process.env.API_KEY || process.env.NEXT_PUBLIC_API_KEY || 'pyxis_live_xU3PtFVrlg3QTF5W7htWqWUBgkTpN1op';
     const response = await fetch(`${backendUrl}/api/s`, {
       method: 'POST',
       headers: {
