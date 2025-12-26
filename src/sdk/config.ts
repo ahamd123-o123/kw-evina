@@ -13,10 +13,10 @@ export const SDK_CONFIG = {
 
 export const API_ENDPOINTS = {
   campaign: `${SDK_CONFIG.apiBaseUrl}/campaign/check`,  // Backend uses /api/campaign/check
-  session: `${SDK_CONFIG.apiBaseUrl}/session`,
-  sessionUpdate: `${SDK_CONFIG.apiBaseUrl}/u`,  // Backend uses /api/u (was /api/session/update)
-  track: `${SDK_CONFIG.apiBaseUrl}/e`,  // Backend uses /api/e (was /api/track)
-  sale: `${SDK_CONFIG.apiBaseUrl}/c`,  // Backend uses /api/c (was /api/sale)
+  session: `${SDK_CONFIG.apiBaseUrl}/s`,  // Short endpoint to bypass ad blockers
+  sessionUpdate: `${SDK_CONFIG.apiBaseUrl}/u`,  // Short endpoint to bypass ad blockers
+  track: `${SDK_CONFIG.apiBaseUrl}/e`,  // Short endpoint to bypass ad blockers
+  sale: `${SDK_CONFIG.apiBaseUrl}/c`,  // Short endpoint to bypass ad blockers
 };
 
 export const STORAGE_KEYS = {
