@@ -37,4 +37,5 @@ export const EVENT_TYPES = {
   FAILED_SALE: 'failedsale',
 } as const;
 
+
 export type EventType = typeof EVENT_TYPES[keyof typeof EVENT_TYPES];
