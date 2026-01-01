@@ -21,8 +21,8 @@ export const IDEX_ERROR_CODES: Record<string, ErrorMapping> = {
   
   // OTP & PIN Verification Errors
   '8001022': {
-    en: 'Invalid PIN. The code you entered is incorrect',
-    ar: 'رمز PIN غير صحيح. الرمز الذي أدخلته غير صحيح'
+    en: 'Invalid phone number. Please enter a valid mobile number',
+    ar: 'رقم هاتف غير صحيح. يرجى إدخال رقم جوال صحيح'
   },
   '8001023': {
     en: 'Your PIN has expired. Please request a new one',
@@ -108,8 +108,22 @@ export const IDEX_ERROR_CODES: Record<string, ErrorMapping> = {
   }
 };
 
-export function getErrorMessage(errorCode: string | number, language: 'en' | 'ar' = 'en'): string {
+export function getErrorMessage(errorCode: string | number, language: 'en' | 'ar' = 'en', context?: 'phone' | 'pin'): string {
   const code = String(errorCode);
+  
+  // Special handling for 8001022 based on context
+  if (code === '8001022') {
+    if (context === 'pin') {
+      return language === 'en' 
+        ? 'Wrong PIN. The code you entered is incorrect'
+        : 'رمز PIN خاطئ. الرمز الذي أدخلته غير صحيح';
+    }
+    // Default to phone context
+    return language === 'en'
+      ? 'Invalid phone number. Please enter a valid mobile number'
+      : 'رقم هاتف غير صحيح. يرجى إدخال رقم جوال صحيح';
+  }
+  
   const mapping = IDEX_ERROR_CODES[code];
   
   if (mapping) {

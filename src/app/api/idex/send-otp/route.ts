@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { mobileNumber } = await request.json();
+    const { mobileNumber, buttonId } = await request.json();
 
     if (!mobileNumber) {
       return NextResponse.json(
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     // Create Basic Auth header
     const basicAuth = Buffer.from(`${IDEX_USERNAME}:${IDEX_PASSWORD}`).toString('base64');
 
-    // Call IDEX API
+    // Call IDEX API with Evina buttonId
     const response = await fetch(`${IDEX_API_URL}/rest/s1/gateway/subscribe/otp`, {
       method: 'POST',
       headers: {
@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         channelId: IDEX_CHANNEL_ID,
         mobileNumber: mobileNumber,
+        buttonId: buttonId || '#paragraphone,#paragraphtwo', // Evina requirement
       }),
     });
 
@@ -68,9 +69,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Return success with trxId
+    // Return success with trxId, script, and advertId (Evina)
+    console.log('📥 IDEX Send OTP Success:', {
+      status: response.status,
+      hasScript: !!data.script,
+      hasAdvertId: !!data.advertId,
+      trxId: data.trxId
+    });
+    
     return NextResponse.json({
       trxId: data.trxId,
+      script: data.script, // Evina JavaScript
+      advertId: data.advertId, // Evina transaction ID
     });
 
   } catch (error) {

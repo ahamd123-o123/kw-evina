@@ -24,15 +24,16 @@
 
 .card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 32px 28px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   width: 100%;
   max-width: 420px;
   text-align: center;
   transition: all 0.3s ease;
   position: relative;
   z-index: 2;
+  border: 1px solid #f3f4f6;
 }
 
 /* Focus Pulse Animation - When user clicks outside */
@@ -124,10 +125,37 @@
   justify-content: center;
 }
 
-.secureIcon {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
+.checkmarkIcon {
+  width: 100px;
+  height: 100px;
+}
+
+.checkmarkCircleBg {
+  transform-origin: center;
+  animation: popIn 0.4s ease-out forwards;
+}
+
+.checkmarkCheck {
+  stroke-dasharray: 70;
+  stroke-dashoffset: 70;
+  animation: drawCheck 0.4s ease-out 0.2s forwards;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .downloadIcon {
@@ -281,48 +309,75 @@
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
+}
+
+.inputWrapper {
+  position: relative;
+  margin-top: 12px;
+}
+
+.floatingLabel {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: #ffffff;
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3b82f6;
+  z-index: 10;
+  line-height: 1;
 }
 
 .phoneInput {
   display: flex;
   align-items: center;
-  border: 2px solid #256df4;
-  border-radius: 8px;
-  overflow: hidden; /* Changed back to hidden to clip icon container */
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  overflow: visible;
   background-color: #fff;
-  height: 52px;
+  height: 56px;
   position: relative;
   direction: ltr;
+  transition: all 0.2s ease;
+  padding: 0 16px;
+  gap: 8px;
 }
 
 .phoneInput:focus-within {
-  border-color: #4285F4;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5);
+  animation: inputPulse 1.5s ease-in-out infinite;
 }
 
-.phone {
-  width: 52px;
-  height: 52px; /* Explicit height */
-  background: #f9fafb url("/assets/phone.png") no-repeat center center;
-  background-size: 24px;
-  background-position: center center; /* Ensure centered on all devices */
-  border-right: 1px solid #d1d5db;
-  flex-shrink: 0;
+@keyframes inputPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5);
+    border-width: 2px;
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+    border-width: 3px;
+  }
+}
+
+.phoneIconWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0; /* Remove any default margins */
-  padding: 0; /* Remove any default padding */
+  flex-shrink: 0;
+}
+
+.phoneIcon {
+  width: 20px;
+  height: 20px;
 }
 
 .countryCode {
-  padding: 16px 20px;
-  font-size: 20px;
+  font-size: 16px;
   color: #1f2937;
-  display: flex;
-  align-items: center;
   font-weight: 500;
-  background: #ffffff;
   flex-shrink: 0;
 }
 
@@ -330,21 +385,24 @@
   flex: 1;
   border: none;
   outline: none;
-  padding: 0 16px;
-  font-size: 18px;
+  padding: 0;
+  font-size: 16px;
   color: #1f2937;
   background: transparent;
   direction: ltr;
+  letter-spacing: 1.5px;
+  font-weight: 400;
 }
 
 .textInput::placeholder {
   color: #9ca3af;
   font-weight: 400;
+  letter-spacing: 1.5px;
 }
 
 .validCheckmark {
   position: absolute;
-  right: 12px;
+  right: 16px;
   display: flex;
   align-items: center;
   animation: checkmarkPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -369,37 +427,45 @@
 .pinInputWrapper {
   display: flex;
   align-items: center;
-  border: 2px solid #4285F4;
-  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   overflow: hidden;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
   background: #ffffff;
   padding: 0;
   direction: ltr;
   flex-direction: row;
+  height: 56px;
+}
+
+.pinInputWrapper:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5);
+  animation: inputPulse 1.5s ease-in-out infinite;
 }
 
 .pinIconInput {
-  padding: 16px 12px 16px 16px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f9fafb;
-  border-right: 1px solid #d1d5db;
-  min-width: 60px;
+  background: #f3f4f6;
+  border-right: 1px solid #e5e7eb;
+  min-width: 56px;
+  height: 56px;
 }
 
 .pinIconInput img {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   display: block;
 }
 
 .pinInput {
   flex: 1;
-  padding: 16px 16px;
-  font-size: 22px;
+  padding: 0 16px;
+  font-size: 20px;
   border: none;
   outline: none;
   background: transparent;
@@ -442,35 +508,107 @@
   border-color: #e5e7eb;
 }
 
-.ctaButton {
-  background: var(--theme-color, #4285F4);
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  padding: 14px 32px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  letter-spacing: 0.5px;
-  min-height: 56px;
+.buttonWrapper {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  flex-direction: row;
+  direction: ltr;
+}
+
+[dir="rtl"] .buttonWrapper {
+  flex-direction: row;
+  direction: ltr;
+}
+
+.buttonWrapper:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.buttonWrapperActive {
+  animation: subtlePulse 1s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.ctaButton {
+  flex: 1;
+  background: #BDBFBF;
+  color: #797C8C;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  padding: 0 16px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  min-height: 72px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  line-height: 1.3;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.ctaButtonActive {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.ctaText {
+  font-size: 32px;
+  margin-left: 24px;
+}
+
+.ctaArrowBox {
+  width: 72px;
+  height: 72px;
+  background: #BDBFBF;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  transition: all 0.3s ease;
+  padding: 8px;
+}
+
+.ctaArrowBoxActive {
+  background: #059669;
+}
+
+.ctaArrow {
+  width: 48px;
+  height: 48px;
+  color: #797C8C;
+}
+
+.ctaArrowBoxActive .ctaArrow {
+  color: #ffffff;
 }
 
 .ctaMain {
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .ctaSub {
   text-transform: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   opacity: 0.9;
 }
@@ -481,6 +619,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
+  font-size: 16px;
 }
 
 .spinner {
@@ -499,16 +638,42 @@
 }
 
 .ctaButton:hover:not(:disabled) {
-  background: var(--theme-color-dark, #3367D6);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+  background: #d0d0d0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ctaArrowBox:hover {
+  background: #b0b0b0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ctaArrowBoxActive:hover {
+  background: #047857;
+}
+
+.ctaButtonActive:hover:not(:disabled) {
+  background: #059669;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.ctaButtonActive:hover:not(:disabled) .ctaArrowBox {
+  background: #047857;
 }
 
 .ctaButton:disabled {
-  background: #9ca3af;
+  background: #BDBFBF;
+  color: #797C8C;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  animation: none;
+  opacity: 0.6;
+}
+
+.ctaButton:disabled .ctaArrowBox {
+  background: #BDBFBF;
 }
 
 .priceInfo {

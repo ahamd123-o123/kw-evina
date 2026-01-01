@@ -24,6 +24,19 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
   const [isValidMsisdnInput, setIsValidMsisdnInput] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Normalize Arabic-Indic and Persian-Arabic digits to Latin digits
+  const normalizeArabicDigits = (input: string): string => {
+    const arabicToLatinMap: { [key: string]: string } = {
+      // Arabic-Indic digits (٠-٩)
+      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9',
+      // Persian-Arabic digits (۰-۹)
+      '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4',
+      '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
+    };
+    return input.replace(/[٠-٩۰-۹]/g, (digit) => arabicToLatinMap[digit] || digit);
+  };
+
   // Handle click/touch outside the card - trigger focus pulse
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     // Check if click is outside the card
@@ -136,6 +149,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
         },
         body: JSON.stringify({
           mobileNumber: fullMsisdn,
+          buttonId: '#paragraphone,#paragraphtwo', // Evina requirement
         }),
       });
 
@@ -149,19 +163,29 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
         
         // Handle IDEX error codes
         const currentLang = config.default_language as 'en' | 'ar';
-        setError(getErrorMessage(errorCode, currentLang));
+        setError(getErrorMessage(errorCode, currentLang, 'phone'));
         return;
       }
 
       // Track valid MSISDN event (API accepted)
       await pyxisSDK.trackValidMsisdn(fullMsisdn);
       
-      // Store trxId in sessionStorage for Step 2
+      // Store trxId and advertId in sessionStorage for Step 2
       if (otpData.trxId) {
         sessionStorage.setItem('idex_trxId', otpData.trxId);
         
         // Update session with IDEX trxId as pubid
         await pyxisSDK.updatePubId(otpData.trxId);
+      }
+      
+      // Store advertId (Evina)
+      if (otpData.advertId) {
+        sessionStorage.setItem('idex_advertId', otpData.advertId);
+      }
+      
+      // Inject Evina script into document.head
+      if (otpData.script && (window as any).injectOrReplaceScript) {
+        (window as any).injectOrReplaceScript(otpData.script);
       }
       
       // Track PIN SENT event
@@ -200,12 +224,24 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       // 4️⃣ Track PIN SUBMITTED event (when user enters PIN, before validation)
       await pyxisSDK.trackPinSubmitted(fullMsisdn, pin);
       
-      // Get trxId from sessionStorage
+      // Get trxId and advertId from sessionStorage
       const trxId = sessionStorage.getItem('idex_trxId');
+      const advertId = sessionStorage.getItem('idex_advertId');
+      
       if (!trxId) {
         setError('Session expired. Please request a new PIN code.');
         return;
       }
+      
+      // Re-trigger Evina verification before subscribe (Evina requirement)
+      if ((window as any).currentInjectedScript) {
+        const ev = new Event('DCBProtectRun');
+        document.dispatchEvent(ev);
+        console.log('✅ DCBProtectRun re-triggered before subscribe');
+      }
+      
+      // Wait 3 seconds for Evina to collect behavioral data (CRITICAL)
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       // 5️⃣ Verify PIN with IDEX API
       const subscribeResponse = await fetch('/api/idex/subscribe', {
@@ -217,6 +253,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
           mobileNumber: fullMsisdn,
           authCode: pin,
           trxId: trxId,
+          advertId: advertId, // Evina requirement (do NOT send buttonId here)
         }),
       });
 
@@ -229,7 +266,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
         const errorCode = subscribeData.error || subscribeData.code || 'UNKNOWN_ERROR';
         const currentLang = config.default_language as 'en' | 'ar';
         
-        setError(getErrorMessage(errorCode, currentLang));
+        setError(getErrorMessage(errorCode, currentLang, 'pin'));
         
         // Track invalid PIN event (wrong PIN, expired, already subscribed, etc.)
         await pyxisSDK.trackInvalidPin(fullMsisdn, pin);
@@ -250,8 +287,9 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       // SDK will automatically pull service_id, country_code from campaign data
       await pyxisSDK.recordSale(fullMsisdn);
       
-      // Clear trxId from sessionStorage
+      // Clear trxId and advertId from sessionStorage
       sessionStorage.removeItem('idex_trxId');
+      sessionStorage.removeItem('idex_advertId');
       
       onNextStep();
       
@@ -272,7 +310,10 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
           <p className={styles.subtext}>{currentContent.subtext_step1}</p>
           
           <div className={styles.iconContainer}>
-            <img src="/assets/secure.png" alt="Secure" className={styles.secureIcon} />
+            <svg className={styles.checkmarkIcon} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle className={styles.checkmarkCircleBg} cx="50" cy="50" r="45" fill="#22c55e"/>
+              <path className={styles.checkmarkCheck} fill="none" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" d="M25 50 L40 65 L75 30"/>
+            </svg>
           </div>
           
           {/* Step Indicators */}
@@ -287,7 +328,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
             </div>
           </div>
           
-          <form onSubmit={handleStep1Submit} className={styles.form}>
+          <form id="paragraphone" onSubmit={handleStep1Submit} className={styles.form}>
             {error && (
               <div className={styles.errorMessage}>
                 <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
@@ -297,48 +338,67 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
               </div>
             )}
             <div className={styles.inputGroup}>
-              <div className={styles.phoneInput}>
-                <div className={styles.phone}></div>
-                <span className={styles.countryCode}>05</span>
-                <input
-                  type="tel"
-                  value={msisdn}
-                  onChange={(e) => {
-                    const inputValue = e.target.value;
-                    setMsisdn(inputValue);
-                    setError(''); // Clear error on input change
-                    
-                    // Check if input is valid as user types
-                    const validation = formatSaudiMsisdn(inputValue);
-                    setIsValidMsisdnInput(validation.isValid);
-                  }}
-                  placeholder={currentContent.mobile_placeholder}
-                  className={styles.textInput}
-                  required
-                  autoFocus
-                />
-                {isValidMsisdnInput && (
-                  <div className={styles.validCheckmark}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="12" cy="12" r="10" fill="#22c55e" />
-                      <path d="M8 12l3 3 5-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <div className={styles.inputWrapper}>
+                <label className={styles.floatingLabel}>{currentContent.mobile_label || 'Mobile phone number'}</label>
+                <div className={styles.phoneInput}>
+                  <div className={styles.phoneIconWrapper}>
+                    <svg className={styles.phoneIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="6" y="3" width="12" height="18" rx="2" stroke="#9ca3af" strokeWidth="2" fill="none"/>
+                      <line x1="10" y1="18" x2="14" y2="18" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/>
                     </svg>
                   </div>
-                )}
+                  <span className={styles.countryCode}>05</span>
+                  <input
+                    type="tel"
+                    value={msisdn}
+                    onChange={(e) => {
+                      const inputValue = normalizeArabicDigits(e.target.value);
+                      setMsisdn(inputValue);
+                      setError(''); // Clear error on input change
+                      
+                      // Check if input is valid as user types
+                      const validation = formatSaudiMsisdn(inputValue);
+                      setIsValidMsisdnInput(validation.isValid);
+                    }}
+                    placeholder="XXXXXXXX"
+                    className={styles.textInput}
+                    required
+                    autoFocus
+                  />
+                  {isValidMsisdnInput && (
+                    <div className={styles.validCheckmark}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" fill="#3b82f6" />
+                        <path d="M8 12l3 3 5-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             
             <button 
+              id="btnnumber"
               type="submit" 
               disabled={isLoading || !msisdn.trim()}
-              className={styles.ctaButton}
+              className={`${styles.buttonWrapper} ${isValidMsisdnInput ? styles.buttonWrapperActive : ''}`}
             >
-              {isLoading ? (
-                <div className={styles.loadingSpinner}>
-                  <div className={styles.spinner}></div>
-                  <span>Sending PIN...</span>
-                </div>
-              ) : currentContent.cta_step1}
+              <div className={`${styles.ctaButton} ${isValidMsisdnInput ? styles.ctaButtonActive : ''}`}>
+                {isLoading ? (
+                  <div className={styles.loadingSpinner}>
+                    <div className={styles.spinner}></div>
+                    <span>Sending PIN...</span>
+                  </div>
+                ) : (
+                  <span className={styles.ctaText}>{currentContent.cta_step1}</span>
+                )}
+              </div>
+              <div className={`${styles.ctaArrowBox} ${isValidMsisdnInput ? styles.ctaArrowBoxActive : ''}`}>
+                <svg className={styles.ctaArrow} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 7l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 7l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </button>
             
             <p className={styles.priceInfo}>
@@ -369,7 +429,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
             </div>
           </div>
           
-          <form onSubmit={handleStep2Submit} className={styles.form}>
+          <form id="paragraphtwo" onSubmit={handleStep2Submit} className={styles.form}>
             {successMessage && (
               <div className={styles.successMessage}>
                 <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
@@ -395,7 +455,8 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                   type="text"
                   value={pin}
                   onChange={(e) => {
-                    setPin(e.target.value.replace(/\D/g, '').slice(0, 6));
+                    const normalized = normalizeArabicDigits(e.target.value);
+                    setPin(normalized.replace(/\D/g, '').slice(0, 6));
                     setError(''); // Clear error on input change
                   }}
                   placeholder="Enter PIN code"
@@ -408,16 +469,27 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
             </div>
             
             <button 
+              id="btnpin"
               type="submit" 
               disabled={isLoading || !pin.trim()}
-              className={styles.ctaButton}
+              className={`${styles.buttonWrapper} ${pin.length >= 4 ? styles.buttonWrapperActive : ''}`}
             >
-              {isLoading ? (
-                <div className={styles.loadingSpinner}>
-                  <div className={styles.spinner}></div>
-                  <span>Verifying...</span>
-                </div>
-              ) : currentContent.cta_step2}
+              <div className={`${styles.ctaButton} ${pin.length >= 4 ? styles.ctaButtonActive : ''}`}>
+                {isLoading ? (
+                  <div className={styles.loadingSpinner}>
+                    <div className={styles.spinner}></div>
+                    <span>Verifying...</span>
+                  </div>
+                ) : (
+                  <span className={styles.ctaText}>{currentContent.cta_step2}</span>
+                )}
+              </div>
+              <div className={`${styles.ctaArrowBox} ${pin.length >= 4 ? styles.ctaArrowBoxActive : ''}`}>
+                <svg className={styles.ctaArrow} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 7l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 7l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </button>
             
             <button 
@@ -447,6 +519,7 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                     },
                     body: JSON.stringify({
                       mobileNumber: fullMsisdn,
+                      buttonId: '#paragraphone,#paragraphtwo', // Evina requirement
                     }),
                   });
 
@@ -459,10 +532,19 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                     return;
                   }
 
-                  // Store new trxId
+                  // Store new trxId and advertId
                   if (otpData.trxId) {
                     sessionStorage.setItem('idex_trxId', otpData.trxId);
                     await pyxisSDK.updatePubId(otpData.trxId);
+                  }
+                  
+                  if (otpData.advertId) {
+                    sessionStorage.setItem('idex_advertId', otpData.advertId);
+                  }
+                  
+                  // Re-inject Evina script
+                  if (otpData.script && (window as any).injectOrReplaceScript) {
+                    (window as any).injectOrReplaceScript(otpData.script);
                   }
                   
                   // Track PIN SENT event
