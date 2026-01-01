@@ -5,6 +5,7 @@ export interface LanguageContent {
   subtext_step1: string;
   step1_label: string;
   step2_label: string;
+  mobile_label: string;
   mobile_placeholder: string;
   resend_pin: string;
   cta_step1: string;
