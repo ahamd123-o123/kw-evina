@@ -46,9 +46,9 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
     }
   };
 
-  // Format and validate Saudi mobile number
-  // Always returns: 966 + 5 + 8 digits (total 12 digits)
-  // Handles: 49176434, 549176434, 0549176434, 966549176434, +966549176434
+  // Format and validate Kuwait mobile number
+  // Always returns: 965 + 8 digits (total 11 digits)
+  // Handles: 47918532, 56984320, 96547918532, +96547918532
   const formatSaudiMsisdn = (input: string): { isValid: boolean; fullMsisdn: string; errorMessage?: string } => {
     // Remove all non-digits
     const cleanInput = input.replace(/\D/g, '');
@@ -60,50 +60,40 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
     
     let mainDigits = cleanInput;
     
-    // Remove country code if present (966)
-    if (mainDigits.startsWith('966')) {
+    // Remove country code if present (965)
+    if (mainDigits.startsWith('965')) {
       mainDigits = mainDigits.substring(3);
     }
     
-    // Remove leading 0 if present (0549176434 -> 549176434)
-    if (mainDigits.startsWith('0')) {
-      mainDigits = mainDigits.substring(1);
-    }
-    
-    // Add 5 prefix if not present (49176434 -> 549176434)
-    if (!mainDigits.startsWith('5')) {
-      mainDigits = '5' + mainDigits;
-    }
-    
-    // Validate: should be exactly 9 digits starting with 5 (5xxxxxxxx)
-    if (mainDigits.length !== 9) {
+    // Validate: should be exactly 8 digits
+    if (mainDigits.length !== 8) {
       return { 
         isValid: false, 
-        fullMsisdn: '966' + mainDigits, 
-        errorMessage: 'Mobile number must be 9 digits (5xxxxxxxx)' 
+        fullMsisdn: '965' + mainDigits, 
+        errorMessage: 'Mobile number must be 8 digits' 
       };
     }
     
-    // Final validation: must start with 5 and be 9 digits
-    if (!mainDigits.startsWith('5') || !/^5\d{8}$/.test(mainDigits)) {
+    // Final validation: must be 8 digits
+    if (!/^\d{8}$/.test(mainDigits)) {
       return { 
         isValid: false, 
-        fullMsisdn: '966' + mainDigits, 
-        errorMessage: 'Mobile number must start with 5 (e.g., 549176434)' 
+        fullMsisdn: '965' + mainDigits, 
+        errorMessage: 'Mobile number must be 8 digits (e.g., 47918532)' 
       };
     }
     
-    // Return valid formatted number: 966 + 5xxxxxxxx
+    // Return valid formatted number: 965 + 8 digits
     return { 
       isValid: true, 
-      fullMsisdn: '966' + mainDigits 
+      fullMsisdn: '965' + mainDigits 
     };
   };
 
-  // Get Saudi mobile format (5xxxxxxxx)
+  // Get Kuwait mobile format (xxxxxxxx)
   const getSaudiMobileFormat = (): string => {
-    if (config.country_code === '+966') {
-      return '5xxxxxxxx'; // 9 digits starting with 5
+    if (config.country_code === '+965') {
+      return 'xxxxxxxx'; // 8 digits
     }
     return 'xxxxxxxxx'; // Default format
   };
@@ -113,13 +103,13 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
     // Remove any spaces or special characters
     const cleanPhone = phone.replace(/\D/g, '');
     
-    // Saudi Arabia: 9 digits starting with 5
-    if (config.country_code === '+966') {
-      return cleanPhone.length === 9 && cleanPhone.startsWith('5');
+    // Kuwait: 8 digits
+    if (config.country_code === '+965') {
+      return cleanPhone.length === 8;
     }
     
-    // Default: at least 9 digits
-    return cleanPhone.length >= 9;
+    // Default: at least 8 digits
+    return cleanPhone.length >= 8;
   };
 
   const handleStep1Submit = async (e: React.FormEvent) => {
