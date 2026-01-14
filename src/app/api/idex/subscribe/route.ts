@@ -54,19 +54,6 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       // Log detailed error
       console.error('❌ IDEX Subscribe API Error:', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${basicAuth}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      // Log detailed error
-      console.error('❌ IDEX Subscribe API Error:', {
         status: response.status,
         statusText: response.statusText,
         responseData: data,
