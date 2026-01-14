@@ -374,6 +374,13 @@
   height: 20px;
 }
 
+.flagIcon {
+  width: 32px;
+  height: 22px;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .countryCode {
   font-size: 16px;
   color: #1f2937;

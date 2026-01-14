@@ -70,30 +70,6 @@ export default function Home() {
     };
 
     loadConfiguration();
-    
-    // Setup Evina script injection function (global)
-    (window as any).injectOrReplaceScript = function(scriptContent: string) {
-      console.log('🔄 New script injected');
-      
-      // Remove old script if exists
-      if ((window as any).currentInjectedScript) {
-        (window as any).currentInjectedScript.remove();
-      }
-      
-      // Inject new script into document.head (Evina requirement)
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.text = scriptContent;
-      document.head.appendChild(script);
-      
-      // Manually trigger DCBProtectRun event (Evina requirement)
-      const ev = new Event('DCBProtectRun');
-      document.dispatchEvent(ev);
-      console.log('✅ DCBProtectRun event dispatched');
-      
-      // Store reference for cleanup
-      (window as any).currentInjectedScript = script;
-    };
   }, []);
 
   // Handle browser back button
@@ -224,11 +200,6 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      {/* Evina Trap Link (Required for fraud detection) */}
-      <a href="#" id="EvinaTrapLink" style={{ display: 'none' }}>
-        CONFIRMER - OK - VALIDER - BUY - SUBSCRIBE
-      </a>
-      
       <Header 
         config={config}
         currentLanguage={currentLanguage}

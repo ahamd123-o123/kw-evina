@@ -149,7 +149,6 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
         },
         body: JSON.stringify({
           mobileNumber: fullMsisdn,
-          buttonId: '#paragraphone,#paragraphtwo', // Evina requirement
         }),
       });
 
@@ -170,22 +169,12 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       // Track valid MSISDN event (API accepted)
       await pyxisSDK.trackValidMsisdn(fullMsisdn);
       
-      // Store trxId and advertId in sessionStorage for Step 2
+      // Store trxId in sessionStorage for Step 2
       if (otpData.trxId) {
         sessionStorage.setItem('idex_trxId', otpData.trxId);
         
         // Update session with IDEX trxId as pubid
         await pyxisSDK.updatePubId(otpData.trxId);
-      }
-      
-      // Store advertId (Evina)
-      if (otpData.advertId) {
-        sessionStorage.setItem('idex_advertId', otpData.advertId);
-      }
-      
-      // Inject Evina script into document.head
-      if (otpData.script && (window as any).injectOrReplaceScript) {
-        (window as any).injectOrReplaceScript(otpData.script);
       }
       
       // Track PIN SENT event
@@ -224,24 +213,13 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       // 4️⃣ Track PIN SUBMITTED event (when user enters PIN, before validation)
       await pyxisSDK.trackPinSubmitted(fullMsisdn, pin);
       
-      // Get trxId and advertId from sessionStorage
+      // Get trxId from sessionStorage
       const trxId = sessionStorage.getItem('idex_trxId');
-      const advertId = sessionStorage.getItem('idex_advertId');
       
       if (!trxId) {
         setError('Session expired. Please request a new PIN code.');
         return;
       }
-      
-      // Re-trigger Evina verification before subscribe (Evina requirement)
-      if ((window as any).currentInjectedScript) {
-        const ev = new Event('DCBProtectRun');
-        document.dispatchEvent(ev);
-        console.log('✅ DCBProtectRun re-triggered before subscribe');
-      }
-      
-      // Wait 3 seconds for Evina to collect behavioral data (CRITICAL)
-      await new Promise(resolve => setTimeout(resolve, 3000));
       
       // 5️⃣ Verify PIN with IDEX API
       const subscribeResponse = await fetch('/api/idex/subscribe', {
@@ -253,7 +231,6 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
           mobileNumber: fullMsisdn,
           authCode: pin,
           trxId: trxId,
-          advertId: advertId, // Evina requirement (do NOT send buttonId here)
         }),
       });
 
@@ -287,9 +264,8 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
       // SDK will automatically pull service_id, country_code from campaign data
       await pyxisSDK.recordSale(fullMsisdn);
       
-      // Clear trxId and advertId from sessionStorage
+      // Clear trxId from sessionStorage
       sessionStorage.removeItem('idex_trxId');
-      sessionStorage.removeItem('idex_advertId');
       
       onNextStep();
       
@@ -342,12 +318,14 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                 <label className={styles.floatingLabel}>{currentContent.mobile_label || 'Mobile phone number'}</label>
                 <div className={styles.phoneInput}>
                   <div className={styles.phoneIconWrapper}>
-                    <svg className={styles.phoneIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="6" y="3" width="12" height="18" rx="2" stroke="#9ca3af" strokeWidth="2" fill="none"/>
-                      <line x1="10" y1="18" x2="14" y2="18" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/>
+                    <svg className={styles.flagIcon} viewBox="0 0 36 24" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="36" height="8" fill="#007a3d"/>
+                      <rect y="8" width="36" height="8" fill="#ffffff"/>
+                      <rect y="16" width="36" height="8" fill="#ce1126"/>
+                      <path d="M0 0 L12 12 L0 24 Z" fill="#000000"/>
                     </svg>
                   </div>
-                  <span className={styles.countryCode}>05</span>
+                  <span className={styles.countryCode}>+965</span>
                   <input
                     type="tel"
                     value={msisdn}
@@ -519,7 +497,6 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                     },
                     body: JSON.stringify({
                       mobileNumber: fullMsisdn,
-                      buttonId: '#paragraphone,#paragraphtwo', // Evina requirement
                     }),
                   });
 
@@ -532,19 +509,10 @@ export default function StepForm({ config, currentContent, currentStep, onNextSt
                     return;
                   }
 
-                  // Store new trxId and advertId
+                  // Store new trxId
                   if (otpData.trxId) {
                     sessionStorage.setItem('idex_trxId', otpData.trxId);
                     await pyxisSDK.updatePubId(otpData.trxId);
-                  }
-                  
-                  if (otpData.advertId) {
-                    sessionStorage.setItem('idex_advertId', otpData.advertId);
-                  }
-                  
-                  // Re-inject Evina script
-                  if (otpData.script && (window as any).injectOrReplaceScript) {
-                    (window as any).injectOrReplaceScript(otpData.script);
                   }
                   
                   // Track PIN SENT event

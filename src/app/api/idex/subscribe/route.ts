@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { mobileNumber, authCode, trxId, advertId } = await request.json();
+    const { mobileNumber, authCode, trxId } = await request.json();
 
     if (!mobileNumber || !authCode || !trxId) {
       return NextResponse.json(
@@ -31,24 +31,29 @@ export async function POST(request: NextRequest) {
     // Log request details for debugging
     console.log('📤 IDEX Subscribe Request:', {
       mobileNumber,
-      hasAdvertId: !!advertId,
       trxId
     });
 
-    // Call IDEX Subscribe API with advertId (Evina)
-    const requestBody: any = {
-      channelId: IDEX_CHANNEL_ID,
-      mobileNumber: mobileNumber,
-      authCode: authCode,
-      trxId: trxId,
-    };
-    
-    // Add advertId if provided (Evina requirement)
-    if (advertId) {
-      requestBody.advertId = advertId;
-    }
-
+    // Call IDEX Subscribe API
     const response = await fetch(`${IDEX_API_URL}/rest/s1/gateway/subscribe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${basicAuth}`,
+      },
+      body: JSON.stringify({
+        channelId: IDEX_CHANNEL_ID,
+        mobileNumber: mobileNumber,
+        authCode: authCode,
+        trxId: trxId,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // Log detailed error
+      console.error('❌ IDEX Subscribe API Error:', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

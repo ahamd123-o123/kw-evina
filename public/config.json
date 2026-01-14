@@ -28,7 +28,7 @@
       "footer_service_description": "AI Chefs - Access to premium digital content and entertainment services",
       "footer_price": "Price:",
       "footer_available": "Available for",
-      "footer_unsubscribe": "To unsubscribe, send U 241 to 670611",
+      "footer_unsubscribe": "To unsubscribe, send stop 2 to 50613",
       "footer_vat_notice": "VAT amount has been deducted from prepaid users upon recharge",
       "footer_about_service": "AI Chefs brings you thousands of recipes from around the world. Discover step-by-step cooking guides, video tutorials, and personalized meal suggestions powered by AI. Whether you're a beginner or a pro chef, explore new flavors and techniques daily.",
       "footer_price_label": "Price:"
@@ -58,20 +58,20 @@
       "footer_service_description": "AI Chefs - الوصول إلى المحتوى الرقمي والخدمات الترفيهية المميزة",
       "footer_price": "السعر:",
       "footer_available": "متاح لـ",
-      "footer_unsubscribe": "لإلغاء الاشتراك، أرسل غ 241 إلى 670611",
+      "footer_unsubscribe": "لإلغاء الاشتراك، أرسل stop 2 إلى 50613",
       "footer_vat_notice": "تم خصم مبلغ ضريبة القيمة المضافة من مستخدمي الدفع المسبق عند إعادة الشحن",
       "footer_about_service": "AI Chefs يقدم لك الآلاف من الوصفات من جميع أنحاء العالم. اكتشف أدلة الطبخ خطوة بخطوة، ودروس الفيديو، واقتراحات الوجبات الشخصية المدعومة بالذكاء الاصطناعي. سواء كنت مبتدئاً أو طاهياً محترفاً، استكشف نكهات وتقنيات جديدة يومياً.",
       "footer_price_label": "السعر:"
     }
   },
 
-  "country_code": "+966",
+  "country_code": "+965",
   "service_name": "AI Chefs",
-  "operators": ["Mobily"],
+  "operators": ["STC Kuwait"],
 
-  "price_text": "3.45 SAR/day (incl. VAT)",
-  "price_text_ar": "3.45 ريال/يوم (شامل ضريبة القيمة المضافة)",
-  "unsubscribe_text": "To unsubscribe, send U 241 to 670611",
+  "price_text": "200 FLS/day",
+  "price_text_ar": "200 فلس/يوم",
+  "unsubscribe_text": "To unsubscribe, send stop 2 to 50613",
   "company_name": "Overseas MCC",
   "company_email": "info@playcheaply.com",
   "terms_link": "/terms",
